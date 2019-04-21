@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/tvTotal"
+        android:layout_width="60dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="36dp"
+        android:text="Total"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTip" />
+
+    <TextView
+        android:id="@+id/tvTotalNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginRight="24dp"
+        android:ems="10"
+        android:scrollHorizontally="false"
+        android:text="@string/tvTotal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTipNum" />
+
+    <Button
+        android:id="@+id/btSizeLt"
+        android:layout_width="50dp"
+        android:layout_height="36dp"
+
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/lt"
+        app:layout_constraintEnd_toStartOf="@id/etSize"
+        app:layout_constraintTop_toBottomOf="@+id/btTipLt" />
+
+    <EditText
+        android:id="@+id/etSize"
+        android:layout_width="65dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:ems="10"
+        android:inputType="numberSigned"
+        android:text="@string/sizeNum"
+        android:imeOptions="actionDone"
+        app:layout_constraintTop_toBottomOf="@id/etTipPer"
+        app:layout_constraintEnd_toStartOf="@id/btSizeGt"
+        />
+
+    <Button
+        android:id="@+id/btSizeGt"
+        android:layout_width="72dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="@string/gt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etTipPer" />
+
+
+    <TextView
+        android:id="@+id/tvTipNum"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:ems="10"
+        android:scrollHorizontally="false"
+        android:text="@string/tipNum"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etSize" />
+
+    <TextView
+        android:id="@+id/tvTip"
+        android:layout_width="60dp"
+        android:layout_height="25dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="32dp"
+        android:text="Tip"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSize" />
+
+    <Button
+        android:id="@+id/btTipLt"
+        android:layout_width="50dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="30dp"
+        android:text="@string/lt"
+        app:layout_constraintEnd_toStartOf="@id/etTipPer"
+        app:layout_constraintTop_toBottomOf="@id/btTwenty" />
+
+
+    <Button
+        android:id="@+id/btTipGt"
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="@string/gt"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btTwenty" />
+
+
+    <TextView
+        android:id="@+id/tvBill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/bill"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <EditText
+        android:id="@+id/teBill"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
+        android:ems="10"
+        android:inputType="numberDecimal"
+        android:text="@string/billNum"
+        android:scrollHorizontally="false"
+        android:imeOptions="actionDone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btFifteen"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
+        android:text="@string/fifteen"
+        app:layout_constraintEnd_toStartOf="@id/btTwenty"
+        app:layout_constraintTop_toBottomOf="@id/teBill" />
+
+    <Button
+        android:id="@+id/btTen"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="@string/ten"
+        app:layout_constraintEnd_toStartOf="@id/btFifteen"
+        app:layout_constraintHorizontal_bias="0.4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/teBill"
+        />
+
+
+    <Button
+        android:id="@+id/btTwenty"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginRight="32dp"
+        android:text="@string/twenty"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/teBill"
+        />
+
+    <TextView
+        android:id="@+id/tvTipPer"
+        android:layout_width="wrap_content"
+        android:layout_height="16dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginLeft="44dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/tipPer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btTen"
+        />
+
+    <EditText
+        android:id="@+id/etTipPer"
+        android:layout_width="65dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:inputType="numberSigned"
+        android:text="@string/ten"
+        android:imeOptions="actionDone"
+        app:layout_constraintRight_toLeftOf="@id/btTipGt"
+        app:layout_constraintTop_toBottomOf="@id/btTwenty" />
+
+    <TextView
+        android:id="@+id/tvSize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="92dp"
+        android:text="@string/size"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTipPer" />
+
+    <android.support.constraint.Barrier
+        android:id="@+id/vert1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="504dp"
+        app:barrierDirection="left"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.469"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</android.support.constraint.ConstraintLayout>
