@@ -1,8 +1,12 @@
 package example.jonathan.tipping;
 
+import android.app.Service;
+import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.view.View;
 import android.widget.*;
 import android.util.Log;
 import android.view.inputmethod.*;
@@ -10,6 +14,10 @@ import android.view.KeyEvent;
 import android.text.TextWatcher;
 import java.lang.StringBuilder;
 import java.lang.String;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Vector;
 
 /*
     import android.view.View;
@@ -17,286 +25,123 @@ import java.lang.String;
     import android.view.View.*;
     import android.content.Intent;
 */
-public class MainActivity extends AppCompatActivity {
+
+/*
+ANDROIDDDDDDD  I LOVE YOU!
+
+
+ */
+public class MainActivity extends AppCompatActivity
+{
     private static final boolean DEBUG = true;
+    public static SoftKeyboard softKeyboard;
+
+
+
     private static final String ACTIVITY = "MainActivity.java";
-
     static final String TE_BILL_KEY = "TE_BILL_KEY";
-    static String billStr;
+    static String billStr; //need to save original value from when keyboard is up.
     static String tipPer;
-    // static final string GAME_STATE_KEY = "fff";
-
-    EditText teBill;
-    EditText etTipPer;
-    TextView tvTotalNum;
-    TextView tvTipNum;
-
-    // some transient state for the activity instance
-    // String gameState;
-
-    /*
-    loads saved data from savedInstanceState for when system destroys the activity
-    TODO: persist data loader
-    input: savedInstanceState
-     */
-    private void dataLoader(Bundle savedInstanceState)
-    {
-        // call the super class onCreate to complete the creation of activity like
-        // the view hierarchy
+    static String sizeNum;
 
 
-        // recovering the instance state
-        //   if (savedInstanceState != null) {
-        //        gameState = savedInstanceState.getString(GAME_STATE_KEY);
-        //   }
-
-    }
-
-    /*
-    Initialize all ui elements / construct listeners.
-
-    */
-    private void initialize()
-    {
-        tvTotalNum = findViewById(R.id.tvTotalNum);
-
-        teBill = findViewById(R.id.teBill);
-        /*
-        TODO: (v, actionId, event) -> {codeblock from if(DEBUG)? } ????does that really work????
-        public boolean onEditorAction delete line.
-         */
-        teBill.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(DEBUG)
-                    Log.d(ACTIVITY, "onEditorAction");
-                Log.d(ACTIVITY, "Action id " + actionId);
-
-                switch(actionId) {
-                    case EditorInfo.IME_ACTION_DONE:
-                        if (DEBUG)
-                            Log.d(ACTIVITY, "IME_ACTION_DONE");
-                        /*
-                        *.*.+ - false
-                        .* = 0.any
-                        0000 = 0.00
-                        every thuosand "," format
-                         */
-
-                        String tmpStr = teBill.getText().toString();
-                        Log.d(ACTIVITY, "82: " + tmpStr);
-                        /*
-                        TODO: stream().filter(match regex).map(do something)
-                        */
-
-                        /*
-                        if(tmpStr.matches("(.*(\\.).*(\\.).*)+"))
-                        {
-                            teBill.setText(MainActivity.billStr);
-                        }
-                        else if(tmpStr.matches("(.*(\\.).*)"))
-                        {
-                            StringBuilder s = new StringBuilder(tmpStr);
-                            s = s.deleteCharAt(0);
-                            //String.Format() ?????????
-                            MainActivity.billStr = s.toString().format("%2f", Double.parseDouble(s.toString()));
-                            teBill.setText(MainActivity.billStr);
-                        }
-                        // need other  cases
-                        else
-                        {
-                            StringBuilder s = new StringBuilder(tmpStr.replaceAll(,""));
-                            s = s.deleteCharAt(0);
-
-                            MainActivity.billStr = s.toString().format("%2f", Double.parseDouble(s.toString()));
-                            teBill.setText(MainActivity.billStr);
-                        }
-                        */
-                        Log.d(ACTIVITY, "110: ");
-                        StringBuilder s = new StringBuilder(tmpStr);
-                        //to handle char $  s = s.deleteCharAt(0);
-                        Log.d(ACTIVITY, "113: ");
-                        MainActivity.billStr = s.toString().format("%2f", Double.parseDouble(s.toString()));
-                        // teBill.setText(MainActivity.billStr);
-                        Log.d(ACTIVITY, "116: ");
-                        calc();
-                        Log.d(ACTIVITY, "117: ");
-                        return true;
-                }
-                return false;
-            }
-        });
-
-        /*
-            TODO: return false for unhandled event such as: MotionEvent.AMBIGUOUS_GESTURE
-             https://developer.android.com/reference/android/view/MotionEvent
-         */
-        /*
-        teBill.setOnTouchListener(new View.OnTouchListener() {
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if(DEBUG)
-                    Log.d(ACTIVITY, "text edit bill listener: onClick");
-                switch(event.getAction())
-                {
-                    case MotionEvent.ACTION_DOWN:
-                        MainActivity.billStr = teBill.getText().toString();
-                        Log.d(ACTIVITY, "BILL:" + MainActivity.billStr);
-                        return true;
-
-                    case MotionEvent.ACTION_UP:
-                        MainActivity.super.findViewById(R.id.teBill).performClick();
-                        return true;
-
-                    default:
-                }
-                return false;
-            }
-        });
-
-        teBill.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                v.performClick();
-            }
-        });
-        */
-
-
-
-
-
-
-
-
-        /*
-        THE STRUGGLE IS SOOOOOO REAL!!
-         */
-        /*
-        teBill.addTextChangedListener(
-                new TextWatcher(){
-                    boolean state = false;
-                    String str;
-
-                    @Override
-                    public void afterTextChanged(Editable s) {
-                        if(DEBUG)
-                            Log.d(ACTIVITY, "afterTextChanged");
-
-                        if(state) {
-                            state = false;
-                            return;
-                        }
-
-                        state = true;
-
-                        if(s.length() > 0 && s.charAt(0) == '$') {
-                            if(DEBUG)
-                                Log.d(ACTIVITY, s.toString());
-                            str = s.toString();
-                        }
-                    }
-                    // check store character flag.
-
-                    // use switch statements based on flag. $, or default case: num - if(Character.isDigit())
-                    @Override
-                    public void beforeTextChanged(CharSequence s, int start,
-                                                  int count, int after) {
-                        //check for $ or no
-                        // set flag for it.
-
-                        // System.out.println(s.toString)
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence s, int start,
-                                              int before, int count) {
-                        // if(s.length() != 0)
-                        //    field2.setText("");
-                    }
-                }
-        );
-        */
-
-
-        etTipPer = findViewById(R.id.etTipPer);
-        etTipPer.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                /*
-                    if(DEBUG)
-                        Log.d(ACTIVITY, "onEditorAction");
-                    Log.d(ACTIVITY, "Action id " + actionId);
-                 */
-                switch(actionId) {
-                    case EditorInfo.IME_ACTION_DONE:
-                        if (DEBUG)
-                            Log.d(ACTIVITY, "IME_ACTION_DONE");
-
-
-                        String tmpStr = etTipPer.getText().toString();
-
-
-                        StringBuilder s = new StringBuilder(tmpStr);
-                        //  to handle char $  s = s.deleteCharAt(0);
-                        MainActivity.tipPer = s.toString().format("%2f", Double.parseDouble(s.toString()));
-                        //  etTipPer.setText(MainActivity.tipPer);
-                        calc();
-
-                        /*
-                            call method to display total/ tip
-                         */
-                        return true;
-                }
-                return false;
-            }
-        });
-
-
-    }
 
     public static void debugL(String msg)
     {
         Log.d(ACTIVITY, msg);
     }
 
-
-    private void calc ()
+    /*
+        Initialize all ui elements / construct listeners.
+    */
+    private void initialize()
     {
-        Log.d(ACTIVITY, "256");
-        if(etTipPer == null)
-            debugL("264: etTipper NULL ");
-//FEEEEELS BADDDD MANNNNNN
-        tvTotalNum = findViewById(R.id.tvTotalNum);
-        tvTipNum = findViewById(R.id.tvTipNum);
-/*
-TODO: broke because tipPerString = not parsed from tvTipPer and stored as static field.
- */
+        //saving edit text fields.
+        final EditText teBill = findViewById(R.id.teBill);
+        final EditText etTipPer = findViewById(R.id.etTipPer);
+        final EditText etSize = findViewById(R.id.etSize);
 
-        if(tvTotalNum == null)
-            debugL("265 tipPer NULL ");
+        //keyboard open close for edittext
+        ConstraintLayout mainLayout = findViewById(R.id.main_view); // You must use the layout root
+        InputMethodManager im = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
 
-        debugL("267: TIPPER!!!!!!PLZ :)"+ MainActivity.tipPer);
-        // debugL(Double.toString((double)Double.parseDouble(MainActivity.billStr)));
+        softKeyboard = new SoftKeyboard(mainLayout, im);
+        softKeyboard.setSoftKeyboardCallback(new SoftKeyboard.SoftKeyboardChanged()
+        {
+            //onclick in edit text cursor blink end
+            @Override
+            public void onSoftKeyboardHide()
+            {
+                // Log.d("ACTIVITY_MAIN", "KEYBOARD HIDE ET1: " );
+            }
 
-        if(etTipPer != null) {
-            String TipNumResult = Double.toString((double) Calc.calcTipNum((double) Double.parseDouble(MainActivity.billStr), (double) Double.parseDouble(etTipPer.getText().toString())));
-            tvTipNum.setText(TipNumResult);
+            //onclick in edit text cursor blink start.
+            @Override
+            public void onSoftKeyboardShow()
+            {
+                // Log.d("ACTIVITY_MAIN", "KEYBOARD OPEN ET1:");
+                final EditText v = (EditText)getCurrentFocus();
 
-            String TotalNumResult = Double.toString((double)Calc.calcTotal((double)Double.parseDouble(MainActivity.billStr), (double)Double.parseDouble(TipNumResult)));
-            tvTotalNum.setText(TotalNumResult);
-        }
+                //You have to move the portion of the background task that updates the UI onto
+                // the main thread
+                runOnUiThread(new Runnable()
+                {
+                    /*
+                       input:
+                        Bill, TipPer, Size for et1, et2 depending on v.
+                        if v is tipPer, et1 = Bill, et2 = TipPer. left to right.
 
+                       output:
+                        String to be saved.
+                    */
+                    private String resetEditText(ArrayList<EditText> et, ArrayList<String> str)
+                    {
+                        if(et.size()== 0 || str.size() == 0)
+                            throw new IllegalArgumentException();
 
+                        EditText v = et.get(0);
+                        for(int i = 1; i < et.size(); i++)
+                        {
+                            if(et.get(i) == v)
+                                continue;
 
+                            EditText ele = et.get(i);
+                            if (ele.getText().length() == 0)
+                                ele.setText(str.get(i-1));
+                        }
+                        return v.getText().toString();
+                    }
 
+                    @Override
+                    public void run()
+                    {
+                        //0th element string dummy node for case.
+                        ArrayList<EditText> et = new ArrayList<EditText>(Arrays.asList(v, teBill, etTipPer, etSize));
+                        ArrayList<String> str = new ArrayList<>(Arrays.asList(billStr, tipPer, sizeNum));
+                        // clear edittext when user onclick, and store current string as default.
+                        switch (v.getId())
+                        {
+                            case R.id.teBill:
+                                billStr = resetEditText(et, str);
+                                break;
 
+                            case R.id.etTipPer:
+                                tipPer = resetEditText(et, str);
+                                break;
 
-        // etTipPer.setText(MainActivity.tipPer);
-        // etTipPer.setText(MainActivity.tipPer);
+                            case R.id.etSize:
+                                sizeNum = resetEditText(et,str);
+
+                        }
+                        v.setText("");
+                    }
+                });
+            }
+        });
+
+        teBill.setOnEditorActionListener(UIHandler.getEditTextListener());
+        etTipPer.setOnEditorActionListener(UIHandler.getEditTextListener());
     }
-
 
 
 
@@ -334,6 +179,7 @@ TODO: broke because tipPerString = not parsed from tvTipPer and stored as static
         super.onDestroy();
         if(DEBUG)
             Log.d(ACTIVITY,"onDestroy");
+        softKeyboard.unRegisterSoftKeyboardCallback();
     }
 
     @Override
@@ -341,9 +187,11 @@ TODO: broke because tipPerString = not parsed from tvTipPer and stored as static
         if(DEBUG)
             Log.d(ACTIVITY, "OnCreate");
 
-
         super.onCreate(savedInstanceState);
-        dataLoader(savedInstanceState);
+
+
+       // dataLoader(savedInstanceState);
+
         // set the user interface layout for this activity
         // the layout file is defined in the project res/layout/main_activity.xml file
         setContentView(R.layout.activity_main);
@@ -360,7 +208,7 @@ TODO: broke because tipPerString = not parsed from tvTipPer and stored as static
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         if(DEBUG)
             Log.d(ACTIVITY,"onRestoreInstanceState");
-        teBill.setText(savedInstanceState.getString(TE_BILL_KEY));
+       // teBill.setText(savedInstanceState.getString(TE_BILL_KEY));
     }
 
     // invoked when the activity may be temporarily destroyed, save the instance state here
@@ -369,7 +217,7 @@ TODO: broke because tipPerString = not parsed from tvTipPer and stored as static
         if(DEBUG)
             Log.d(ACTIVITY, "onSaveInstanceState");
         // outState.putString(GAME_STATE_KEY, gameState);
-        outState.putString(TE_BILL_KEY, teBill.getText().toString());
+      //  outState.putString(TE_BILL_KEY, teBill.getText().toString());
 
         // call superclass to save any view hierarchy
         super.onSaveInstanceState(outState);
