@@ -96,7 +96,7 @@ public class UIHandler {
                         case R.id.etSize:
                             if(!etStr.isEmpty())
                                 MainActivity.size = s.toString();
-                            v.setText(MainActivity.tipPer);
+                            v.setText(MainActivity.size);
 
                             /*
                         case R.id.swSize:
