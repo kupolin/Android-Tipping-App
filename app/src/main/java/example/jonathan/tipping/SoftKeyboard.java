@@ -18,6 +18,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
+
+/*
+TODO: NEED TO UNDERSTAND THIS SHIT. NOT JUST MAKING IT WORK.
+ */
 // Observer Pattern? check later.
 public class SoftKeyboard implements View.OnFocusChangeListener
 {
@@ -61,7 +65,9 @@ public class SoftKeyboard implements View.OnFocusChangeListener
     {
         Log.d("ACTIVITY_MAIN", "closeSoftKeyboard");
         Log.d("ACTIVITY_MAIN", "" + isKeyboardShow);
-        if(isKeyboardShow)
+
+        //if(isKeyboardShow)
+        if(!isKeyboardShow)
         {
             im.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
             isKeyboardShow = false;
@@ -241,8 +247,8 @@ public class SoftKeyboard implements View.OnFocusChangeListener
                     mCallback.onSoftKeyboardHide();
 
                 // if keyboard has been opened clicking and EditText.
-               // if(isKeyboardShow && started.get())
-               //     isKeyboardShow = false;
+                if(isKeyboardShow && started.get())
+                    isKeyboardShow = false;
 
                 // if an EditText is focused, remove its focus (on UI thread)
 

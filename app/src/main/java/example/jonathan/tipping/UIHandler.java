@@ -5,7 +5,10 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import java.security.DomainCombiner;
 
 /*
     Initializer / listener in which parses the ui strings from user input.
@@ -26,6 +29,9 @@ public class UIHandler {
     */
     private static final Calc c = new Calc();
     private static final EditTextListener editTextListener = new EditTextListener();
+    private static final SwitchListener swListener = new SwitchListener();
+
+    private static boolean sw_flag = false;
 
     public static EditTextListener getEditTextListener() {
         return editTextListener;
@@ -56,7 +62,7 @@ public class UIHandler {
 
                         .* = 0.any
                         0000 = 0.00
-                        every thousand "," format
+                       TODO: every thousand "," format
                     */
                         String etStr = v.getText().toString();
                     Log.d("ACTIVITY_MAIN", "etStr After"  );
@@ -65,77 +71,40 @@ public class UIHandler {
                         TODO: stream().filter(match regex).map(do something)
                         */
 
-                        //invalid corner case method for bill et because only bill et has .
-                    /*
-                        if(etStr.matches("(.*(\\.).*(\\.)[(\\.).*)]+)*") || etStr.matches("(\\.)"))
-                        {
-                            switch (v.getId())
-                            {
-                                case R.id.teBill:
-                                    v.setText(MainActivity.billStr);
-                                    break;
-                            }
-                            return true;
-                        }
-*/
-
-                        /*
-                        else if(etStr.matches("(.*(\\.).*)"))
-                            {
-                            StringBuilder s = new StringBuilder(etStr);
-                            s = s.deleteCharAt(0);
-                            //String.Format() ?????????
-                            MainActivity.billStr = s.toString().format("%2f", Double.parseDouble(s.toString()));
-                            teBill.setText(MainActivity.billStr);
-                        }
-                        // need other  cases
-                        else
-                        {
-                            StringBuilder s = new StringBuilder(etStr.replaceAll(,""));
-                            s = s.deleteCharAt(0);
-
-                            MainActivity.billStr = s.toString().format("%2f", Double.parseDouble(s.toString()));
-                            teBill.setText(MainActivity.billStr);
-                        }
-                        */
-
-
-
-                        /*
-
-                          String etStr = v.getText().toString();
-
-
-                        StringBuilder s = new StringBuilder(etStr);
-                        //  to handle char $  s = s.deleteCharAt(0);
-                        MainActivity.tipPer = s.toString().forDouble.parseDouble(s.toString()));
-
-
-
-                        // calc();
-                         */
                         StringBuilder s = new StringBuilder(etStr);
                         //to handle char $  s = s.deleteCharAt(0);
-
-
 
 
                     //TODO: LEGAL
                         //&& check with regex statement if legal.
                         //if not then need to set value to default value.
 
-                        if(v.getId() == R.id.teBill) {
+                    switch (v.getId())
+                    {
+                        case R.id.teBill:
+
                             //only the edit text box have it.
-                            if(!etStr.matches("(\\.)*"))
+                            if (!etStr.matches("(\\.)*"))
                                 MainActivity.billStr = s.toString().format("%.2f", Double.parseDouble(s.toString()));
                             v.setText(MainActivity.billStr);
-                        }
-                        else if(v.getId() == R.id.etTipPer) {
-                            MainActivity.tipPer = s.toString();
+                            break;
+
+                        case R.id.etTipPer:
+                            if(!etStr.isEmpty())
+                                MainActivity.tipPer = s.toString();
                             v.setText(MainActivity.tipPer);
-                        }
+                        case R.id.etSize:
+                            if(!etStr.isEmpty())
+                                MainActivity.size = s.toString();
+                            v.setText(MainActivity.tipPer);
 
+                            /*
+                        case R.id.swSize:
+                            MainActivity.sizeNum = s.toString();
+                            v.set
+                            */
 
+                    }
                     c.calc((ViewGroup)v.getParent());
                     MainActivity.softKeyboard.closeSoftKeyboard();
 
@@ -145,7 +114,24 @@ public class UIHandler {
             }
             return false;
         }
+    }
+    /*
+    switch view handler
+     */
 
+    private static class SwitchListener implements CompoundButton.OnCheckedChangeListener
+    {
+        private SwitchListener()
+        {}
+        /*
+        input:
+            boolean isChecked == true if switch is on
+        */
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+        {
+            sw_flag = isChecked;
+        }
     }
     /*
     text view handler.
