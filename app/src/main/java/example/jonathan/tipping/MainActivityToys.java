@@ -40,15 +40,15 @@ Instad of having hte next button, change to accept and changes go through.
 
                         if(tmpStr.matches("(.*(\\.).*(\\.).*)+"))
                         {
-                            teBill.setText(MainActivity.billStr);
+                            teBill.setText(MainActivity.et_strings.get("billStr"));
                         }
                         else if(tmpStr.matches("(.*(\\.).*)"))
                         {
                             StringBuilder s = new StringBuilder(tmpStr);
                             s = s.deleteCharAt(0);
                             //String.Format() ?????????
-                            MainActivity.billStr = s.toString().format("%2f", Double.parseDouble(s.toString()));
-                            teBill.setText(MainActivity.billStr);
+                            MainActivity.et_strings.get("tipPerStr")= s.toString().format("%2f", Double.parseDouble(s.toString()));
+                            teBill.setText(MainActivity.et_strings.get("billStr"));
                         }
                         // need other  cases
                         else
@@ -56,16 +56,16 @@ Instad of having hte next button, change to accept and changes go through.
                             StringBuilder s = new StringBuilder(tmpStr.replaceAll(,""));
                             s = s.deleteCharAt(0);
 
-                            MainActivity.billStr = s.toString().format("%2f", Double.parseDouble(s.toString()));
-                            teBill.setText(MainActivity.billStr);
+                            MainActivity.et_strings.get("tipPerStr")= s.toString().format("%2f", Double.parseDouble(s.toString()));
+                            teBill.setText(MainActivity.et_strings.get("billStr"));
                         }
 
                     Log.d(ACTIVITY, "110: ");
                     StringBuilder s = new StringBuilder(tmpStr);
                     //to handle char $  s = s.deleteCharAt(0);
                     Log.d(ACTIVITY, "113: ");
-                    MainActivity.billStr = s.toString().format("%2f", Double.parseDouble(s.toString()));
-                    // teBill.setText(MainActivity.billStr);
+                    MainActivity.et_strings.get("tipPerStr")= s.toString().format("%2f", Double.parseDouble(s.toString()));
+                    // teBill.setText(MainActivity.et_strings.get("billStr"));
                     Log.d(ACTIVITY, "116: ");
                     calc();
                     Log.d(ACTIVITY, "117: ");
@@ -91,8 +91,8 @@ Instad of having hte next button, change to accept and changes go through.
                 switch(event.getAction())
                 {
                     case MotionEvent.ACTION_DOWN:
-                        MainActivity.billStr = teBill.getText().toString();
-                        Log.d(ACTIVITY, "BILL:" + MainActivity.billStr);
+                        MainActivity.et_strings.get("tipPerStr")= teBill.getText().toString();
+                        Log.d(ACTIVITY, "BILL:" + MainActivity.et_strings.get("billStr"));
                         return true;
 
                     case MotionEvent.ACTION_UP:

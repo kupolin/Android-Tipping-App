@@ -1,5 +1,6 @@
 package example.jonathan.tipping;
 
+import android.annotation.SuppressLint;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.security.DomainCombiner;
+import java.util.Locale;
 
 /*
     Initializer / listener in which parses the ui strings from user input.
@@ -85,25 +87,39 @@ public class UIHandler {
 
                             //only the edit text box have it.
                             if (!etStr.matches("(\\.)*"))
-                                MainActivity.billStr = s.toString().format("%.2f", Double.parseDouble(s.toString()));
-                            v.setText(MainActivity.billStr);
+                                //default local english for bugs.
+
+                            MainActivity.et_strings.put("billStr", String.format(new Locale("en"), "%.2f", Double.parseDouble(s.toString())));
+
+                            //for when there are more than one 0 at the start of the value. i.e. 00000.123 or 000213
+                            // MainActivity.et_strings.get("tipPerStr")= MainActivity.et_strings.get("billStr").replaceFirst("^0+(\\.)", "0.");
+
+                            v.setText(MainActivity.et_strings.get("billStr"));
                             break;
 
                         case R.id.etTipPer:
+                            /*
+                              replacing leading 0 with negative lookahead. $ is end of line.
+                              lookahead case:
+                                    0000 becomes 0 because last character is 0 and not end of line.
+                                else
+                                    replaces all 0+ with empty string.
+                            */
                             if(!etStr.isEmpty())
-                                MainActivity.tipPer = s.toString();
-                            v.setText(MainActivity.tipPer);
+                                MainActivity.et_strings.put("tipPerStr", etStr.replaceFirst("^0+(?!$)",""));
+                            v.setText(MainActivity.et_strings.get("tipPerStr"));
+
                         case R.id.etSize:
-                            if(!etStr.isEmpty())
-                                MainActivity.size = s.toString();
-                            v.setText(MainActivity.size);
+                            //when a string input is 00000, set output to be previous value.
+                            if(!etStr.matches("0*"))
+                                MainActivity.et_strings.put("sizeStr", etStr.replaceFirst("^0+(?!$)",""));
+                            v.setText(MainActivity.et_strings.get("sizeStr"));
 
                             /*
                         case R.id.swSize:
-                            MainActivity.sizeNum = s.toString();
+                            et_strings.get("sizeStr")Num = s.toString();
                             v.set
                             */
-
                     }
                     c.calc((ViewGroup)v.getParent());
                     MainActivity.softKeyboard.closeSoftKeyboard();

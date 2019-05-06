@@ -18,6 +18,9 @@ import java.lang.String;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Vector;
 
 /*
@@ -42,10 +45,14 @@ public class MainActivity extends AppCompatActivity
     private static final String ACTIVITY = "ACTIVITY_MAIN";
     static final String TE_BILL_KEY = "TE_BILL_KEY";
 
+    // create a hashmap where key: string, value: string. key is variable name
+    // billStr, tipPerStr, sizeStr are all EditText Strings
+    static LinkedHashMap<String, String> et_strings;
+    /*
     static String billStr = ""; //need to save original value from when keyboard is up.
     static String tipPer = "" ;
     static String size = "";
-
+    */
     public static void debugL(String msg)
     {
         Log.d(ACTIVITY, msg);
@@ -55,9 +62,10 @@ public class MainActivity extends AppCompatActivity
     // value is null
     private void initDefaultValues(EditText teBill, EditText etTipPer, EditText etSize)
     {
-        MainActivity.billStr = teBill.getText().toString();
-        MainActivity.tipPer = etTipPer.getText().toString();
-        MainActivity.size = etSize.getText().toString();
+        et_strings = new LinkedHashMap<>();
+        et_strings.put("billStr", teBill.getText().toString());
+        et_strings.put("tipPerStr", etTipPer.getText().toString());
+        et_strings.put("sizeStr", etSize.getText().toString());
     }
     /*
         Initialize all ui elements / construct listeners.
@@ -99,12 +107,14 @@ public class MainActivity extends AppCompatActivity
                         Bill, TipPer, Size for et1, et2 depending on v.
                         if v is tipPer, et1 = Bill, et2 = TipPer. left to right.
 
+                        Object[] - array of string values from et_strings.
+
                        output:
                         String to be saved.
                     */
-                    private String resetEditText(ArrayList<EditText> et, ArrayList<String> str)
+                    private String resetEditText(ArrayList<EditText> et, Object [] str)
                     {
-                        if(et.size() == 0 || str.size() == 0)
+                        if(et.size() == 0 || str.length == 0)
                             throw new IllegalArgumentException();
 
                         EditText v = et.get(0);
@@ -114,11 +124,26 @@ public class MainActivity extends AppCompatActivity
                                 continue;
 
                             EditText ele = et.get(i);
+                            String eleStr = ele.getText().toString();
                             // case for when click one edit text then click another edit text
                             // when such a case happens, the previous edit text would still be clear
                             // the previous value has already been saved. like magic.
                             if (ele.getText().length() == 0)
-                                ele.setText(str.get(i-1));
+                                ele.setText((String)str[i-1]);
+                            // case when user type in edit text field i.e. 0021312, needs to be reparsed.
+                            // only reparse if softkey ime action done was not clicked, since softkey reparses.
+
+                            else if(!eleStr.equals(str[i-1]))
+                            {
+                                // bill needs to be parsed as double,
+                                // all others are in the form of int.
+                                String s = ele.getId()== R.id.teBill ? String.format(new Locale("en"), "%.2f", Double.parseDouble(eleStr))
+                                                : eleStr.replaceFirst("^0+(?!$)","");
+                                if (ele.getId() == R.id.etSize)
+                                    s = s.replaceFirst("0", "1");
+                                ele.setText(s);
+                                // update the stupid hashmap.
+                            }
                         }
                         return v.getText().toString();
                     }
@@ -129,34 +154,53 @@ public class MainActivity extends AppCompatActivity
                         debugL("onSoftKeyboardShow run");
                         //0th element string dummy node for case.
                         ArrayList<EditText> et = new ArrayList<EditText>(Arrays.asList(v, teBill, etTipPer, etSize));
-                        ArrayList<String> str = new ArrayList<>(Arrays.asList(MainActivity.billStr, MainActivity.tipPer, MainActivity.size));
+                        Object [] str_array = et_strings.values().toArray();
                         // clear edittext when user onclick, and store current string as default.
                         switch (v.getId())
                         {
                             case R.id.teBill:
-                                MainActivity.billStr = resetEditText(et, str);
+                                //corner case for 0000s
+                                String s = resetEditText(et,str_array);
+                                //TODO: refactor this with UIhandler.java edit text listener output format.
+                                // need to update str arraylist for when it is the same view being refocused. i.e. when keyboard is always up.
+                                // doesn't apply for when clicked done and refocus because a new runnable will be created in that instance.
+                                //This saves on Open default value.
+                                // need to reparse other strings edit text if user has typed something when keyboard is open.
+                                MainActivity.et_strings.put("billStr", String.format(new Locale("en"), "%.2f", Double.parseDouble(s)));
+                                debugL("RUN_ TEBILL ___ : " + MainActivity.et_strings.get("billStr"));
+
+
+
+
                                 break;
 
                             case R.id.etTipPer:
-                                debugL("before resetEdit " + tipPer);
-                                MainActivity.tipPer = resetEditText(et, str);
+                                debugL("before resetEdit " + et_strings.get("tipPerStr"));
+                                s = resetEditText(et, str_array).replaceFirst("^0+(?!$)","");
+                                MainActivity.et_strings.put("tipPerStr", s);
+                                // need to update str arraylist for when it is the same view being refocused. i.e. when keyboard is always up.
+                                // doesn't apply for when clicked done and refocus because a new runnable will be created in that instance.
 
 
                                 if (Looper.myLooper() == Looper.getMainLooper())
-                                    debugL("MAINTHREADDDD onSoftKeyboard " + tipPer);
+                                    debugL("MAINTHREADDDD onSoftKeyboard " + et_strings.get("tipPerStr"));
                                 else
-                                    debugL("NOT MAIN onSoftKeyboard " + tipPer);
+                                    debugL("NOT MAIN onSoftKeyboard " + et_strings.get("tipPerStr"));
                                 break;
 
                             case R.id.etSize:
-                                MainActivity.size = resetEditText(et,str);
+                                s = resetEditText(et,str_array).replaceFirst("^0+(?!$)","");
+                                et_strings.put("sizeStr", s);
+                                // need to update str arraylist for when it is the same view being refocused. i.e. when keyboard is always up.
+                                // doesn't apply for when clicked done and refocus because a new runnable will be created in that instance.
+
                                 Log.d("ACTIVITY_MAIN", "TEMP: " + v.getText().toString());
 
                         }
-                        Log.d("ACTIVITY_MAIN", "*** softkeyboard ***  After cases: " + size);
-                        MainActivity.debugL("Bill: " + MainActivity.billStr);
-                        MainActivity.debugL("size:" + size);
-                        MainActivity.debugL("tipPer:" + MainActivity.tipPer);
+                        Log.d("ACTIVITY_MAIN", "*** softkeyboard ***  After cases: " + et_strings.get("sizeStr"));
+                        MainActivity.debugL("Bill: " + MainActivity.et_strings.get("billStr"));
+                        MainActivity.debugL("size:" + et_strings.get("sizeStr"));
+                        MainActivity.debugL("tipPer Str: "  + et_strings.get("tipPerStr"));
                         v.setText("");
                     }
                 });
@@ -183,7 +227,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onResume();
         //saving edit text fields.
-       // Log.d("MAIN_ACTIVITY", "------------ initial values " + billStr + tipPer + size);
+       // Log.d("MAIN_ACTIVITY", "------------ initial values " + et_strings.get("billStr") + et_strings.get("tipPerStr") + size);
         //keyboard open close for edittext
         if(DEBUG)
             Log.d(ACTIVITY, "onResume");

@@ -7,6 +7,8 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 //output class takes in a view.
 public class Calc {
 
@@ -78,25 +80,24 @@ public class Calc {
         //switch off is per person for size > 1.
         //switch on is one person.
         Log.d("ACTIVITY_MAIN", "size_int " + size_int);
-        Log.d("ACTIVITY_MAIN", "tipPer in CALC " + MainActivity.tipPer);
+        Log.d("ACTIVITY_MAIN", "tipPer in CALC " + MainActivity.et_strings.get("tipPerStr"));
         if (Looper.myLooper() == Looper.getMainLooper())
-            MainActivity.debugL("MAINTHREADDDD CALC " + MainActivity.tipPer);
+            MainActivity.debugL("MAINTHREADDDD CALC " + MainActivity.et_strings.get("tipPerStr"));
         else
-            MainActivity.debugL("NOT MAIN THREAD CALC: " + MainActivity.tipPer);
-        MainActivity.debugL("Before calctipNum " + MainActivity.billStr);
-        MainActivity.debugL("Bill: " + MainActivity.billStr);
+            MainActivity.debugL("NOT MAIN THREAD CALC: " + MainActivity.et_strings.get("tipPerStr"));
+        MainActivity.debugL("Before calctipNum " + MainActivity.et_strings.get("billStr"));
+        MainActivity.debugL("Bill: " + MainActivity.et_strings.get("billStr"));
         MainActivity.debugL("div:" + div);
-        MainActivity.debugL("tipPer:" + MainActivity.tipPer);
-        double dTipNumResult = calcTipNum(Double.parseDouble(MainActivity.billStr),
-                                              Integer.parseInt(MainActivity.tipPer),
+        MainActivity.debugL("tipPer:" + MainActivity.et_strings.get("tipPerStr"));
+        double dTipNumResult = calcTipNum(Double.parseDouble(MainActivity.et_strings.get("billStr")),
+                                              Integer.parseInt(MainActivity.et_strings.get("tipPerStr")),
                                               div);
 
         String strTipNumResult = Double.toString(dTipNumResult );
-        tvTipNum.setText(strTipNumResult);
+        String totalNumResult = Double.toString(calcTotal(Double.parseDouble(MainActivity.et_strings.get("billStr")), dTipNumResult));
 
-        String TotalNumResult = Double.toString(calcTotal(Double.parseDouble(MainActivity.billStr), dTipNumResult));
-        tvTotalNum.setText(TotalNumResult);
-
+        tvTipNum.setText(String.format(new Locale("en"), "%.2f", Double.parseDouble(strTipNumResult)));
+        tvTotalNum.setText(String.format(new Locale("en"), "%.2f", Double.parseDouble(totalNumResult)));
     }
 }
 
