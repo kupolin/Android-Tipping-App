@@ -99,7 +99,7 @@
         android:layout_marginTop="30dp"
         android:text="@string/lt"
         app:layout_constraintEnd_toStartOf="@id/etTipPer"
-        app:layout_constraintTop_toBottomOf="@id/btTwenty" />
+        app:layout_constraintTop_toBottomOf="@id/btTip3" />
 
 
     <Button
@@ -111,7 +111,7 @@
         android:layout_marginRight="16dp"
         android:text="@string/gt"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btTwenty" />
+        app:layout_constraintTop_toBottomOf="@id/btTip3" />
 
 
     <TextView
@@ -142,18 +142,18 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btFifteen"
+        android:id="@+id/btTip2"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="40dp"
         android:layout_marginRight="40dp"
         android:text="@string/fifteen"
-        app:layout_constraintEnd_toStartOf="@id/btTwenty"
+        app:layout_constraintEnd_toStartOf="@id/btTip3"
         app:layout_constraintTop_toBottomOf="@id/teBill" />
 
     <Button
-        android:id="@+id/btTen"
+        android:id="@+id/btTip1"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -162,7 +162,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:text="@string/ten"
-        app:layout_constraintEnd_toStartOf="@id/btFifteen"
+        app:layout_constraintEnd_toStartOf="@id/btTip2"
         app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/teBill"
@@ -170,7 +170,7 @@
 
 
     <Button
-        android:id="@+id/btTwenty"
+        android:id="@+id/btTip3"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -190,7 +190,7 @@
         android:layout_marginTop="32dp"
         android:text="@string/tipPer"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btTen"
+        app:layout_constraintTop_toBottomOf="@id/btTip1"
         />
 
     <!-- android:imeOptions="actionDone" -->
@@ -205,7 +205,7 @@
         android:text="@string/ten"
         android:imeOptions="actionDone"
         app:layout_constraintRight_toLeftOf="@id/btTipGt"
-        app:layout_constraintTop_toBottomOf="@id/btTwenty" />
+        app:layout_constraintTop_toBottomOf="@id/btTip3" />
 
     <TextView
         android:id="@+id/tvSize"
@@ -236,6 +236,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:checked="true"
         app:layout_constraintBottom_toBottomOf="@+id/btSizeLt"
         app:layout_constraintEnd_toStartOf="@+id/btSizeLt"
         app:layout_constraintTop_toTopOf="@+id/btSizeLt" />

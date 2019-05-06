@@ -6,7 +6,9 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.security.DomainCombiner;
@@ -29,17 +31,22 @@ public class UIHandler {
     strings later?
 
     */
-    private static final Calc c = new Calc();
+    protected static final Calc c = new Calc();
     private static final EditTextListener editTextListener = new EditTextListener();
     private static final SwitchListener swListener = new SwitchListener();
-
-    private static boolean sw_flag = false;
+    private static final ButtonListener btListener = new ButtonListener();
 
     public static EditTextListener getEditTextListener() {
         return editTextListener;
     }
 
+    public static SwitchListener getSwitchListener() {
+        return swListener;
+    }
 
+    public static ButtonListener getButtonListener() {
+        return btListener;
+    }
     private static class EditTextListener implements TextView.OnEditorActionListener
     {
         private EditTextListener(){}
@@ -89,12 +96,12 @@ public class UIHandler {
                             if (!etStr.matches("(\\.)*"))
                                 //default local english for bugs.
 
-                            MainActivity.et_strings.put("billStr", String.format(new Locale("en"), "%.2f", Double.parseDouble(s.toString())));
+                            MainActivity.et_strings.put(R.id.teBill, String.format(new Locale("en"), "%.2f", Double.parseDouble(s.toString())));
 
                             //for when there are more than one 0 at the start of the value. i.e. 00000.123 or 000213
-                            // MainActivity.et_strings.get("tipPerStr")= MainActivity.et_strings.get("billStr").replaceFirst("^0+(\\.)", "0.");
+                            // MainActivity.et_strings.get(R.id.etTipPer)= MainActivity.et_strings.get(R.id.teBill).replaceFirst("^0+(\\.)", "0.");
 
-                            v.setText(MainActivity.et_strings.get("billStr"));
+                            v.setText(MainActivity.et_strings.get(R.id.teBill));
                             break;
 
                         case R.id.etTipPer:
@@ -106,18 +113,18 @@ public class UIHandler {
                                     replaces all 0+ with empty string.
                             */
                             if(!etStr.isEmpty())
-                                MainActivity.et_strings.put("tipPerStr", etStr.replaceFirst("^0+(?!$)",""));
-                            v.setText(MainActivity.et_strings.get("tipPerStr"));
+                                MainActivity.et_strings.put(R.id.etTipPer, etStr.replaceFirst("^0+(?!$)",""));
+                            v.setText(MainActivity.et_strings.get(R.id.etTipPer));
 
                         case R.id.etSize:
                             //when a string input is 00000, set output to be previous value.
                             if(!etStr.matches("0*"))
-                                MainActivity.et_strings.put("sizeStr", etStr.replaceFirst("^0+(?!$)",""));
-                            v.setText(MainActivity.et_strings.get("sizeStr"));
+                                MainActivity.et_strings.put(R.id.etSize, etStr.replaceFirst("^0+(?!$)",""));
+                            v.setText(MainActivity.et_strings.get(R.id.etSize));
 
                             /*
                         case R.id.swSize:
-                            et_strings.get("sizeStr")Num = s.toString();
+                            et_strings.get(R.id.etSize)Num = s.toString();
                             v.set
                             */
                     }
@@ -137,26 +144,50 @@ public class UIHandler {
 
     private static class SwitchListener implements CompoundButton.OnCheckedChangeListener
     {
-        private SwitchListener()
-        {}
-        /*
-        input:
-            boolean isChecked == true if switch is on
-        */
+        private SwitchListener() {}
+
         @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-        {
-            sw_flag = isChecked;
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            /*
+                case when user is in the editText and switch is switched off, the text view needs to update accordingly.
+                when switching off, check if user has inputted in the size edit text.
+                Do this by checking against et_strings hashmap with current edit text view.
+             */
+            EditText etSize = ((ViewGroup)buttonView.getParent()).findViewById(R.id.etSize);
+            String etSizeStr = etSize.getText().toString();
+            // checking if user is currently inputing inside edit text size and then switched the switch off.
+            if (!MainActivity.et_strings.get(R.id.etSize).equals(etSizeStr));
+                MainActivity.et_strings.put(R.id.etSize, etSizeStr);
+            UIHandler.c.calc((ViewGroup) buttonView.getParent());
         }
     }
-    /*
-    text view handler.
-
-     */
-
 
     /*
     button handler
      */
+    private static class ButtonListener implements View.OnClickListener
+    {
+        private ButtonListener(){}
 
+        @Override
+        public void onClick(View v)
+        {
+            Button b = (Button) v;
+            EditText etTipPer = ((ViewGroup)v.getParent()).findViewById(R.id.etTipPer);
+
+            String bStr = b.getText().toString();
+
+            //if v.getId is a tip percent id, then the following:
+
+
+            // tipPer edit Text.set (the button string)
+            // TODO when end with %, need to regex it out.
+            etTipPer.setText(bStr);
+            MainActivity.et_strings.put(etTipPer.getId(), bStr);
+
+            //calculate and output textviews
+            c.calc((ViewGroup)v.getParent());
+
+        }
+    }
 }

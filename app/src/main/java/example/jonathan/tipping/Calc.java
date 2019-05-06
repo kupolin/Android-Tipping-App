@@ -9,6 +9,8 @@ import android.widget.TextView;
 
 import java.util.Locale;
 
+import static java.lang.Integer.parseInt;
+
 //output class takes in a view.
 public class Calc {
 
@@ -60,18 +62,15 @@ public class Calc {
     //calc and setting textview total
     public void calc (ViewGroup v)
     {
-        EditText etTipPer = v.findViewById(R.id.etTipPer);
-
-
         //etTipper view can be null because when clicking etBill, viewgroup is passed in.
-        TextView billStr = v.findViewById(R.id.teBill);
         TextView tvTotalNum = v.findViewById(R.id.tvTotalNum);
         TextView tvTipNum = v.findViewById(R.id.tvTipNum);
+
+        //switch case for tip per person.
         Switch sw = v.findViewById(R.id.swSize);
 
-        TextView etSize = v.findViewById(R.id.etSize);
-
-        int size_int = Integer.parseInt(etSize.getText().toString());
+        //never gonna be null.
+        int size_int = parseInt(MainActivity.et_strings.get(R.id.etSize));
 
         Log.d("ACTIVITY_MAIN", "sw: " + sw.isChecked());
         //divisor for calcTipNum. switch on = per person.
@@ -80,21 +79,25 @@ public class Calc {
         //switch off is per person for size > 1.
         //switch on is one person.
         Log.d("ACTIVITY_MAIN", "size_int " + size_int);
-        Log.d("ACTIVITY_MAIN", "tipPer in CALC " + MainActivity.et_strings.get("tipPerStr"));
+        Log.d("ACTIVITY_MAIN", "tipPer in CALC " + MainActivity.et_strings.get(R.id.etTipPer));
         if (Looper.myLooper() == Looper.getMainLooper())
-            MainActivity.debugL("MAINTHREADDDD CALC " + MainActivity.et_strings.get("tipPerStr"));
+            MainActivity.debugL("MAINTHREADDDD CALC " + MainActivity.et_strings.get(R.id.etTipPer));
         else
-            MainActivity.debugL("NOT MAIN THREAD CALC: " + MainActivity.et_strings.get("tipPerStr"));
-        MainActivity.debugL("Before calctipNum " + MainActivity.et_strings.get("billStr"));
-        MainActivity.debugL("Bill: " + MainActivity.et_strings.get("billStr"));
+            MainActivity.debugL("NOT MAIN THREAD CALC: " + MainActivity.et_strings.get(R.id.etTipPer));
+        MainActivity.debugL("Before calctipNum " + MainActivity.et_strings.get(R.id.teBill));
+        MainActivity.debugL("Bill: " + MainActivity.et_strings.get(R.id.teBill));
         MainActivity.debugL("div:" + div);
-        MainActivity.debugL("tipPer:" + MainActivity.et_strings.get("tipPerStr"));
-        double dTipNumResult = calcTipNum(Double.parseDouble(MainActivity.et_strings.get("billStr")),
-                                              Integer.parseInt(MainActivity.et_strings.get("tipPerStr")),
-                                              div);
+        MainActivity.debugL("tipPer:" + MainActivity.et_strings.get(R.id.etTipPer));
+
+        double dBill = Double.parseDouble(MainActivity.et_strings.get(R.id.teBill));
+        double dTipNumResult = calcTipNum(dBill, Integer.parseInt(MainActivity.et_strings.get(R.id.etTipPer)), div);
+        double dTotal = calcTotal(dBill, dTipNumResult);
+        //Total Bill per person if switch is off.
+        if(!sw.isChecked())
+            dTotal /= size_int;
 
         String strTipNumResult = Double.toString(dTipNumResult );
-        String totalNumResult = Double.toString(calcTotal(Double.parseDouble(MainActivity.et_strings.get("billStr")), dTipNumResult));
+        String totalNumResult = Double.toString(dTotal);
 
         tvTipNum.setText(String.format(new Locale("en"), "%.2f", Double.parseDouble(strTipNumResult)));
         tvTotalNum.setText(String.format(new Locale("en"), "%.2f", Double.parseDouble(totalNumResult)));
