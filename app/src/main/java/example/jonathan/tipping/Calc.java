@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.Locale;
 
 import static java.lang.Integer.parseInt;
-
+//MAKE THIS A SINGLETON CLASS. or better yet make static methods.
 //output class takes in a view.
 public class Calc {
 

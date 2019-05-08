@@ -1,27 +1,28 @@
 package example.jonathan.tipping;
 
-import android.app.Service;
-import android.os.Looper;
-import android.support.constraint.ConstraintLayout;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.ViewGroup;
 import android.widget.*;
 import android.util.Log;
-import android.view.inputmethod.*;
 import java.lang.String;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Locale;
 
+
+/*
+OnFocusChangeListener can be used to detect view onFocus
+onFocus happens before onClick, right when view is clicked.
+After view is focused, and user clicks inside the view, onClick is then called.
+
+OnFocus can only happen OnFocus first gains focus and last gains focus of a view.
+
+This is used to replace SoftKeyboard.java because SoftKeyboard.java detects the blinker inside the editText.
+ */
 
 public class MainActivity extends AppCompatActivity
 {
     private static final boolean DEBUG = true;
-    public static SoftKeyboard softKeyboard;
-
     private static final String ACTIVITY = "ACTIVITY_MAIN";
     static final String TE_BILL_KEY = "TE_BILL_KEY";
 
@@ -45,140 +46,6 @@ public class MainActivity extends AppCompatActivity
         et_strings.put(R.id.etSize, etSize.getText().toString());
     }
 
-    private void initSoftKeyBoard(final EditText teBill, final EditText etTipPer, final EditText etSize)
-    {
-        ConstraintLayout mainLayout = findViewById(R.id.main_view); // You must use the layout root
-        InputMethodManager im = (InputMethodManager) getSystemService(Service.INPUT_METHOD_SERVICE);
-        softKeyboard = new SoftKeyboard(mainLayout, im);
-        softKeyboard.setSoftKeyboardCallback(new SoftKeyboard.SoftKeyboardChanged()
-        {
-            //onclick in edit text cursor blink end
-            @Override
-            public void onSoftKeyboardHide()
-            {
-                // Log.d("ACTIVITY_MAIN", "KEYBOARD HIDE ET1: " );
-            }
-
-            //onclick in edit text cursor blink start.
-            @Override
-            public void onSoftKeyboardShow()
-            {
-                Log.d("ACTIVITY_MAIN", "OnSoftKeyBoardShowStart:");
-                final EditText v = (EditText)getCurrentFocus();
-
-                //You have to move the portion of the background task that updates the UI onto
-                // the main thread
-                runOnUiThread(new Runnable()
-                {
-                    /*
-                       input:
-                        Bill, TipPer, Size for et1, et2 depending on v.
-                        if v is tipPer, et1 = Bill, et2 = TipPer. left to right.
-
-                        Object[] - array of string values from et_strings.
-
-                       output:
-                        String to be saved.
-                    */
-                    private String resetEditText(ArrayList<EditText> et)
-                    {
-                        if(et.size() == 0)
-                            throw new IllegalArgumentException();
-
-                        EditText v = et.get(0);
-                        for(int i = 1; i < et.size(); i++)
-                        {
-                            //point of this method is to ALL OTHER edit text / text Views besides current editText.
-                            //reason for this is because when it is current view, just update the other edit text.
-                            // the current view just needs to be saved and replaced with empty string.
-                            if(et.get(i) == v)
-                                continue;
-
-                            EditText ele = et.get(i);
-                            String eleStr = ele.getText().toString();
-                            String defaultEleStr = MainActivity.et_strings.get(ele.getId());
-
-                            // case for when click one edit text then click another edit text
-                            // when such a case happens, the previous edit text would still be clear
-                            // the previous value has already been saved.
-
-                            if (ele.getText().length() == 0)
-                                ele.setText(defaultEleStr);
-                                // case when user type in edit text field i.e. 0021312, needs to be reparsed.
-                                // only reparse if softkey ime action done was not clicked, since softkey reparses.
-
-                            else if(!eleStr.equals(defaultEleStr))
-                            {
-                                // formatting output
-                                // bill needs to be parsed as double,
-                                // all others are in the form of int.
-                                String s = ele.getId()== R.id.teBill ? String.format(new Locale("en"), "%.2f", Double.parseDouble(eleStr))
-                                        : eleStr.replaceFirst("^0+(?!$)","");
-                                if (ele.getId() == R.id.etSize && s.matches("0"))
-                                    s = s.replaceFirst("0", "1");
-
-                                //update output and defaultValue map
-                                MainActivity.et_strings.put(ele.getId(), s);
-                                ele.setText(s);
-                            }
-                        }
-                        return v.getText().toString();
-                    }
-
-                    @Override
-                    public void run()
-                    {
-                        debugL("onSoftKeyboardShow run");
-                        //0th element string dummy node for case.
-                        ArrayList<EditText> et = new ArrayList<EditText>(Arrays.asList(v, teBill, etTipPer, etSize));
-                        // clear edittext when user onclick, and store current string as default.
-                        switch (v.getId())
-                        {
-                            case R.id.teBill:
-                                //corner case for 0000s
-                                String s = resetEditText(et);
-                                //TODO: refactor this with UIhandler.java edit text listener output format.
-                                // need to update str arraylist for when it is the same view being refocused. i.e. when keyboard is always up.
-                                // doesn't apply for when clicked done and refocus because a new runnable will be created in that instance.
-                                //This saves on Open default value.
-                                // need to reparse other strings edit text if user has typed something when keyboard is open.
-                                MainActivity.et_strings.put(R.id.teBill, String.format(new Locale("en"), "%.2f", Double.parseDouble(s)));
-                                debugL("RUN_ TEBILL ___ : " + MainActivity.et_strings.get(R.id.teBill));
-                                break;
-
-                            case R.id.etTipPer:
-                                debugL("before resetEdit " + et_strings.get(R.id.etTipPer));
-                                s = resetEditText(et).replaceFirst("^0+(?!$)","");
-                                MainActivity.et_strings.put(R.id.etTipPer, s);
-                                // need to update str arraylist for when it is the same view being refocused. i.e. when keyboard is always up.
-                                // doesn't apply for when clicked done and refocus because a new runnable will be created in that instance.
-
-
-                                if (Looper.myLooper() == Looper.getMainLooper())
-                                    debugL("MAINTHREADDDD onSoftKeyboard " + et_strings.get(R.id.etTipPer));
-                                else
-                                    debugL("NOT MAIN onSoftKeyboard " + et_strings.get(R.id.etTipPer));
-                                break;
-
-                            case R.id.etSize:
-                                s = resetEditText(et).replaceFirst("^0+(?!$)","");
-                                et_strings.put(R.id.etSize, s);
-                                // need to update str arraylist for when it is the same view being refocused. i.e. when keyboard is always up.
-                                // doesn't apply for when clicked done and refocus because a new runnable will be created in that instance.
-
-                                Log.d("ACTIVITY_MAIN", "TEMP: " + v.getText().toString());
-                        }
-                        Log.d("ACTIVITY_MAIN", "*** softkeyboard ***  After cases: " + et_strings.get(R.id.etSize));
-                        MainActivity.debugL("Bill: " + MainActivity.et_strings.get(R.id.teBill));
-                        MainActivity.debugL("size:" + et_strings.get(R.id.etSize));
-                        MainActivity.debugL("tipPer Str: "  + et_strings.get(R.id.etTipPer));
-                        UIHandler.c.calc((ViewGroup)v.getParent());
-                        v.setText("");
-                    }
-                });
-            }
-        });
-    }
     /*
         Initialize all ui elements / construct listeners.
     */
@@ -198,12 +65,17 @@ public class MainActivity extends AppCompatActivity
         //initialize
         initDefaultValues(teBill, etTipPer, etSize);
         //keyboard open close for edittext
-        initSoftKeyBoard(teBill, etTipPer, etSize);
+       // initSoftKeyBoard(teBill, etTipPer, etSize);
 
         //initialize edit text listeners
-        teBill.setOnEditorActionListener(UIHandler.getEditTextListener());
-        etTipPer.setOnEditorActionListener(UIHandler.getEditTextListener());
-        etSize.setOnEditorActionListener(UIHandler.getEditTextListener());
+        teBill.setOnEditorActionListener(UIHandler.getEditTextEditorListener());
+        etTipPer.setOnEditorActionListener(UIHandler.getEditTextEditorListener());
+        etSize.setOnEditorActionListener(UIHandler.getEditTextEditorListener());
+
+        //set onfocus listener
+        teBill.setOnFocusChangeListener(UIHandler.getEditTextFocusListener());
+        etTipPer.setOnFocusChangeListener(UIHandler.getEditTextFocusListener());
+        etSize.setOnFocusChangeListener(UIHandler.getEditTextFocusListener());
 
         //initialize switch listener
         swSize.setOnCheckedChangeListener(UIHandler.getSwitchListener());
@@ -250,7 +122,6 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
         if(DEBUG)
             Log.d(ACTIVITY,"onDestroy");
-        softKeyboard.unRegisterSoftKeyboardCallback();
     }
 
     @Override

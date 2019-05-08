@@ -219,7 +219,7 @@ public class SoftKeyboard implements View.OnFocusChangeListener
 
                 // When keyboard is opened from EditText, initial bottom location is greater than layoutBottom
                 // and at some moment equals layoutBottom.
-                // That broke the previous logic, so I added this new loop to handle this.
+                // That broke the previous logic, so I addd this new loop to handle this.
 
                 // just check if the current view is an edit text in the above loop or just make the above >=????
                 while(currentBottomLocation >= layoutBottom && started.get())
