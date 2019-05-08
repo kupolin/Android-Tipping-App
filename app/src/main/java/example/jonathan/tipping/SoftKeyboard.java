@@ -1,5 +1,5 @@
 /*
- * Author: Felipe Herranz (felhr85@gmail.com)
+ * Author:Felipe Herranz (felhr85@gmail.com)
  * Contributors:Francesco Verheye (verheye.francesco@gmail.com)
  * 		Israel Dominguez (dominguez.israel@gmail.com)
  */
@@ -18,22 +18,18 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-
-/*
-TODO: NEED TO UNDERSTAND THIS SHIT. NOT JUST MAKING IT WORK.
- */
 // Observer Pattern? check later.
 public class SoftKeyboard implements View.OnFocusChangeListener
 {
-    private static final int CLEAR_FOCUS = 0;
+    private static final int CLEAR_FOCUS = 0; //????
 
-    private ViewGroup layout;
-    private int layoutBottom;
-    private InputMethodManager im;
+    private ViewGroup layout; // root layout.
+    private int layoutBottom; // bottom layout height
+    private InputMethodManager im; //input key manager
     private int[] coords;
     private boolean isKeyboardShow;
-    private SoftKeyboardChangesThread softKeyboardThread;
-    private List<EditText> editTextList;
+    private SoftKeyboardChangesThread softKeyboardThread; //
+    private List<EditText> editTextList; // # of edit texts on the screen.
 
     private View tempView; // reference to a focused EditText
 
@@ -97,7 +93,7 @@ public class SoftKeyboard implements View.OnFocusChangeListener
     private int getLayoutCoordinates()
     {
         layout.getLocationOnScreen(coords);
-        return coords[1] + layout.getHeight();
+        return coords[1] + layout.getHeight(); //index 0 is x 1 is y
     }
 
     private void keyboardHideByDefault()
@@ -176,7 +172,7 @@ public class SoftKeyboard implements View.OnFocusChangeListener
 
     private class SoftKeyboardChangesThread extends Thread
     {
-        private AtomicBoolean started;
+        private AtomicBoolean started; //true when constructed
         private SoftKeyboardChanged mCallback;
 
         public SoftKeyboardChangesThread()
@@ -192,6 +188,7 @@ public class SoftKeyboard implements View.OnFocusChangeListener
         @Override
         public void run()
         {
+            // acts as a looper
             while(started.get())
             {
                 // Wait until keyboard is requested to open
@@ -199,7 +196,7 @@ public class SoftKeyboard implements View.OnFocusChangeListener
                 {
                     try
                     {
-                        wait();
+                        wait(); // thread is waiting/sleeping
                     } catch (InterruptedException e)
                     {
                         e.printStackTrace();
@@ -211,23 +208,37 @@ public class SoftKeyboard implements View.OnFocusChangeListener
                 // There is some lag between open soft-keyboard function and when it really appears.
                 while(currentBottomLocation == layoutBottom && started.get())
                 {
+                    // acts as a looper until keyboard is at the default position.
                     currentBottomLocation = getLayoutCoordinates();
                 }
 
+                //Keyboard is already opened and at correct height. when is started ever false?
+                //case when thread stops i.e. when app calls onDestroy need to stop and unregister thread.
                 if(started.get())
-                    mCallback.onSoftKeyboardShow();
+                    mCallback.onSoftKeyboardShow(); //THIS IS ON BLINK.
 
                 // When keyboard is opened from EditText, initial bottom location is greater than layoutBottom
                 // and at some moment equals layoutBottom.
                 // That broke the previous logic, so I added this new loop to handle this.
+
+                // just check if the current view is an edit text in the above loop or just make the above >=????
                 while(currentBottomLocation >= layoutBottom && started.get())
                 {
                     currentBottomLocation = getLayoutCoordinates();
                 }
 
+                // the fact that you are running code from onSoftKeyboardShow() shows that the keyboard is ALREADY shown.
+                // what about the earlier while statement wasn't the purpose of that to make SURE the keyboard is SHOWING?
+
+                //there's GOTTA be a better way to do this instead of looping this in the background and eat up more resources.....
+                // honestly just want to delete this. like wtf is this code.
+
                 // Now Keyboard is shown, keep checking layout dimensions until keyboard is gone
                 while(currentBottomLocation != layoutBottom && started.get())
                 {
+                    /*
+                    // dont need this code.
+
                     synchronized(this)
                     {
                         try
@@ -240,9 +251,10 @@ public class SoftKeyboard implements View.OnFocusChangeListener
                             e.printStackTrace();
                         }
                     }
+                    */
                     currentBottomLocation = getLayoutCoordinates();
                 }
-
+                //bro this is blinker not keyboard.
                 if(started.get())
                     mCallback.onSoftKeyboardHide();
 
