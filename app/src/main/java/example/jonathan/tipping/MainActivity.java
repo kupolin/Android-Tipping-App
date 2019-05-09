@@ -3,11 +3,12 @@ package example.jonathan.tipping;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.ViewGroup;
 import android.widget.*;
 import android.util.Log;
 import java.lang.String;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+
 
 
 /*
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity
 
     // create a hashmap where key: string, value: string. key is variable name
     // billStr, tipPerStr, sizeStr are all EditText Strings
-    static HashMap<Integer, String> et_strings;
+    static HashMap<Integer, Number> et_strings;
 
     public static void debugL(String msg)
     {
@@ -40,10 +41,12 @@ public class MainActivity extends AppCompatActivity
     // value is null
     private void initDefaultValues(EditText teBill, EditText etTipPer, EditText etSize)
     {
-        et_strings = new LinkedHashMap<>();
+        /*
+        et_strings = new HashMap<>();
         et_strings.put(R.id.teBill, teBill.getText().toString());
         et_strings.put(R.id.etTipPer, etTipPer.getText().toString());
         et_strings.put(R.id.etSize, etSize.getText().toString());
+        */
     }
 
     /*
@@ -51,6 +54,10 @@ public class MainActivity extends AppCompatActivity
     */
     private void initialize()
     {
+        InputViews in = new InputViews();
+        // parses all text views and puts them in a model.
+        in.parseAllTextViews((ViewGroup)findViewById(R.id.rootViewGroup));
+
         //saving edit text fields.
         final EditText teBill = findViewById(R.id.teBill);
         final EditText etTipPer = findViewById(R.id.etTipPer);
@@ -63,9 +70,8 @@ public class MainActivity extends AppCompatActivity
         final Button btTip3 = findViewById(R.id.btTip3);
 
         //initialize
-        initDefaultValues(teBill, etTipPer, etSize);
-        //keyboard open close for edittext
-       // initSoftKeyBoard(teBill, etTipPer, etSize);
+       // initDefaultValues(teBill, etTipPer, etSize);
+
 
         //initialize edit text listeners
         teBill.setOnEditorActionListener(UIHandler.getEditTextEditorListener());
@@ -80,11 +86,11 @@ public class MainActivity extends AppCompatActivity
         //initialize switch listener
         swSize.setOnCheckedChangeListener(UIHandler.getSwitchListener());
 
-        //initialize button listeners
+    //initialize button listeners
         btTip1.setOnClickListener(UIHandler.getButtonListener());
         btTip2.setOnClickListener(UIHandler.getButtonListener());
         btTip3.setOnClickListener(UIHandler.getButtonListener());
-    }
+}
 
     @Override
     public void onStart()

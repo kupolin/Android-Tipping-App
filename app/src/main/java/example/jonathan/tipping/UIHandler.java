@@ -1,6 +1,5 @@
 package example.jonathan.tipping;
 
-import android.annotation.SuppressLint;
 import android.app.Service;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -45,9 +44,7 @@ public class UIHandler {
     public static SwListener getSwitchListener() {
         return swListener;
     }
-    public static BtListener getButtonListener() {
-        return btListener;
-    }
+    public static BtListener getButtonListener() { return btListener; }
     public static EtOnFocusChangeListener getEditTextFocusListener(){ return etFocusListener; }
 
     private static class EtEditorListener implements TextView.OnEditorActionListener
@@ -83,8 +80,10 @@ public class UIHandler {
                     switch (v.getId())
                     {
                         case R.id.teBill:
-
+                            // hashmap store NUMBER.
                             //default local english for decimal comma.
+
+                            //only not empty string will be inputted.
                             if (!etStr.isEmpty())
                                 MainActivity.et_strings.put(R.id.teBill, String.format(new Locale("en"), "%.2f", Double.parseDouble(s.toString())));
 
@@ -117,7 +116,10 @@ public class UIHandler {
                             v.set
                             */
                     }
+                    //calculator
                     c.calc((ViewGroup)v.getParent());
+
+                    //keyboard
                     InputMethodManager im = (InputMethodManager) v.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
                     //cannot use HIDE_IMPLICIT_ONLY, because default keyboard service is opened.
                     //i.e. numeric keyboard overlayed over alpha keyboard.
@@ -287,7 +289,6 @@ public class UIHandler {
         {
             Button b = (Button) v;
             EditText etTipPer = ((ViewGroup)v.getParent()).findViewById(R.id.etTipPer);
-
             String bStr = b.getText().toString();
 
             //if v.getId is a tip percent id, then the following:

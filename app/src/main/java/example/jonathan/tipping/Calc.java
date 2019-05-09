@@ -10,17 +10,14 @@ import android.widget.TextView;
 import java.util.Locale;
 
 import static java.lang.Integer.parseInt;
-//MAKE THIS A SINGLETON CLASS. or better yet make static methods.
-//output class takes in a view.
+
+//controller that calculates the calctipNum, and calcTotal
 public class Calc {
-
-
 /*
     input:
         bill: etBill input
         tip:  etTip input
         div: division of billTotal.
-                tip is in % need to divide by 100 * size.
                 it is always better to have as little division as possible due to significant
                 for more accurate results.
 
@@ -42,10 +39,9 @@ public class Calc {
         MainActivity.debugL("div:" + div);
         MainActivity.debugL("Result:" + result);
 
-
         return result;
-//        return bill * tip/100.00;
     }
+
 /*
     Whenever subtracting two numbers with the same signs or adding two numbers
     with different signs, the accuracy of the result may be less than the precision
@@ -56,10 +52,6 @@ public class Calc {
         return bill + tip;
     }
 
-
-    // make some override interface function that does all the output for the activity. calc needs to be an abstract class.
-    //calc and setting textview tip
-    //calc and setting textview total
     public void calc (ViewGroup v)
     {
         //etTipper view can be null because when clicking etBill, viewgroup is passed in.
@@ -99,6 +91,7 @@ public class Calc {
         String strTipNumResult = Double.toString(dTipNumResult );
         String totalNumResult = Double.toString(dTotal);
 
+        // outputs two section of view.
         tvTipNum.setText(String.format(new Locale("en"), "%.2f", Double.parseDouble(strTipNumResult)));
         tvTotalNum.setText(String.format(new Locale("en"), "%.2f", Double.parseDouble(totalNumResult)));
     }
