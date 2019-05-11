@@ -40,6 +40,7 @@ public class InputViews {
         if (v.getText().toString().isEmpty() && !(v instanceof Switch))
             return;
 
+        Log.d("MAINACTIVITY", "PARSETEXTVIEW + " + v.getContext().getResources().getResourceEntryName(v.getId()) + ": " + v.getText().toString());
         switch (v.getInputType())
         {
             case InputType.TYPE_CLASS_NUMBER:
@@ -75,7 +76,4 @@ public class InputViews {
             et_data.put(v.getId(), etNum);
     }
     */
-    private void parseNumberFromView(TextView v) {
-
-    }
 }

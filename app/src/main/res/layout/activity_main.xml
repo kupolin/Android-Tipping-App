@@ -149,6 +149,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="40dp"
         android:layout_marginRight="40dp"
+        android:inputType="number"
         android:text="@string/fifteen"
         app:layout_constraintEnd_toStartOf="@id/btTip3"
         app:layout_constraintTop_toBottomOf="@id/teBill" />
@@ -162,6 +163,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
+        android:inputType="number"
         android:text="@string/ten"
         app:layout_constraintEnd_toStartOf="@id/btTip2"
         app:layout_constraintHorizontal_bias="0.4"
@@ -178,6 +180,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
         android:text="@string/twenty"
+        android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/teBill"
         />

@@ -8,6 +8,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -39,7 +40,11 @@ public class OutputViews {
             default:
                 out = MainActivity.getInputViews().tv_str_data.get(v.getId());
         }
+
         v.setText(out);
+
+        if(v instanceof EditText)
+            ((EditText)v).setSelection(out.length());
 
         //if cases such as check for empty string.
         /*

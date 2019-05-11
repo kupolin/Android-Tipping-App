@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 public class BtOnClickListener implements View.OnClickListener
 {
@@ -23,6 +24,7 @@ public class BtOnClickListener implements View.OnClickListener
     {
         // get button tip %
         SparseArray<Number> tv_num_data = MainActivity.getInputViews().tv_num_data;
+        //use view parser then move cursor if it is in the tipPer box.
         tv_num_data.put(R.id.etTipPer, tv_num_data.get(v.getId()));
 
         Calc.getInstance().calc();
@@ -30,5 +32,7 @@ public class BtOnClickListener implements View.OnClickListener
         // output
         ViewGroup root = ((Activity)v.getContext()).findViewById(R.id.main_view);
         MainActivity.getOutputViews().outputAllTextView(root);
+
+        //set cursor to end if it is etTiPper
     }
 }
