@@ -1,19 +1,18 @@
+/*
+    @Author: Jonathan Lin (jonathan.lin108@gmail.com)
+*/
+
 package example.jonathan.tipping;
 
 import android.os.Looper;
 import android.util.Log;
-import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.Switch;
-import android.widget.TextView;
-
-import java.util.Locale;
-
-import static java.lang.Integer.parseInt;
 
 //controller that calculates the calctipNum, and calcTotal
 public class Calc {
-/*
+    private static final Calc calc = new Calc();
+    public static Calc getCalc() { return calc; }
+
+    /*
     input:
         bill: etBill input
         tip:  etTip input
@@ -28,7 +27,7 @@ public class Calc {
                 When multiplying and dividing sets of numbers, try to arrange the multiplications
                 so that they multiply large and small numbers together; likewise, try to
                 divide numbers that have the same relative magnitudes.
- */
+    */
     private double calcTipNum(double bill, int tip, double div)
     {
         //tip is an int
@@ -52,22 +51,19 @@ public class Calc {
         return bill + tip;
     }
 
-    public void calc (ViewGroup v)
+    public void calc (InputViews in)
     {
-        //etTipper view can be null because when clicking etBill, viewgroup is passed in.
-        TextView tvTotalNum = v.findViewById(R.id.tvTotalNum);
-        TextView tvTipNum = v.findViewById(R.id.tvTipNum);
-
         //switch case for tip per person.
-        Switch sw = v.findViewById(R.id.swSize);
+        //Switch sw = v.findViewById(R.id.swSize);
 
         //never gonna be null.
-        int size_int = parseInt(MainActivity.et_strings.get(R.id.etSize));
 
-        Log.d("ACTIVITY_MAIN", "sw: " + sw.isChecked());
+        int size_int = in.tv_num_data.get(R.id.etSize).intValue();
+
+        Log.d("ACTIVITY_MAIN", "sw: " + in.tv_bool_data.get(R.id.swSize));
         //divisor for calcTipNum. switch on = per person.
-        double div = sw.isChecked() ? 100.0 : (size_int * 100.0);
-        //TODO: switch listener to do calc as well.
+        double div = in.tv_bool_data.get(R.id.swSize) ? 100.0 : (size_int * 100.0);
+
         //switch off is per person for size > 1.
         //switch on is one person.
         Log.d("ACTIVITY_MAIN", "size_int " + size_int);
@@ -81,19 +77,17 @@ public class Calc {
         MainActivity.debugL("div:" + div);
         MainActivity.debugL("tipPer:" + MainActivity.et_strings.get(R.id.etTipPer));
 
-        double dBill = Double.parseDouble(MainActivity.et_strings.get(R.id.teBill));
-        double dTipNumResult = calcTipNum(dBill, Integer.parseInt(MainActivity.et_strings.get(R.id.etTipPer)), div);
+        double dBill = in.tv_num_data.get(R.id.teBill).doubleValue();
+
+        double dTipNumResult = calcTipNum(dBill, in.tv_num_data.get(R.id.etTipPer).intValue(), div);
         double dTotal = calcTotal(dBill, dTipNumResult);
+
         //Total Bill per person if switch is off.
-        if(!sw.isChecked())
+        if(!in.tv_bool_data.get(R.id.swSize))
             dTotal /= size_int;
 
-        String strTipNumResult = Double.toString(dTipNumResult );
-        String totalNumResult = Double.toString(dTotal);
-
-        // outputs two section of view.
-        tvTipNum.setText(String.format(new Locale("en"), "%.2f", Double.parseDouble(strTipNumResult)));
-        tvTotalNum.setText(String.format(new Locale("en"), "%.2f", Double.parseDouble(totalNumResult)));
+        in.tv_num_data.put(R.id.tvTipNum, dTipNumResult);
+        in.tv_num_data.put(R.id.tvTotalNum, dTotal);
     }
 }
 
