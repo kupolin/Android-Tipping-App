@@ -1,17 +1,24 @@
+/*
+    @Author: Jonathan Lin (jonathan.lin108@gmail.com)
+*/
+
 package example.jonathan.tipping;
 
+import android.content.Context;
 import android.text.InputType;
+import android.util.Log;
 import android.util.SparseArray;
+import android.util.SparseBooleanArray;
 import android.view.ViewGroup;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
-
-
 
 public class InputViews {
     // sparsearray to save memory. O(h). else use hashmap.
     public final SparseArray<Number> tv_num_data = new SparseArray<>();
     public final SparseArray<String> tv_str_data = new SparseArray<>();
+    public final SparseBooleanArray tv_bool_data = new SparseBooleanArray();
 
     // onCreate loader, for default values setting. Before user interaction.
     public void parseAllTextViews(ViewGroup root)
@@ -29,14 +36,29 @@ public class InputViews {
 
     public void parseTextView(TextView v)
     {
+        //if text view is empty string do not reparse the view input.
+        if (v.getText().toString().isEmpty() && !(v instanceof Switch))
+            return;
+
         switch (v.getInputType())
         {
             case InputType.TYPE_CLASS_NUMBER:
-                parseNumberFromView((TextView)v);
+                Number etNum = Integer.parseInt(v.getText().toString());
+                tv_num_data.put(v.getId(), etNum);
                 break;
-            // textview default type is string.
+
+            case InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER:
+                tv_num_data.put(v.getId(),
+                                Double.parseDouble(v.getText().toString()));
+                break;
+
+            // textview default type is string. except widgets like switches
             default:
-                tv_str_data.put(v.getId(), ((TextView)v).getText().toString());
+                if(v instanceof Switch)
+                {
+                    tv_bool_data.put(v.getId(), ((Switch) v).isChecked());
+                }
+                tv_str_data.put(v.getId(), v.getText().toString());
         }
     }
 
@@ -54,9 +76,6 @@ public class InputViews {
     }
     */
     private void parseNumberFromView(TextView v) {
-        Number etNum = v.getInputType() == InputType.TYPE_NUMBER_FLAG_DECIMAL
-                     ? Double.parseDouble(v.getText().toString())
-                     : Integer.parseInt(v.getText().toString());
-        tv_num_data.put(v.getId(), etNum);
+
     }
 }

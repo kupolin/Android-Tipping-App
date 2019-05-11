@@ -1,6 +1,12 @@
+/*
+    @Author: Jonathan Lin (jonathan.lin108@gmail.com)
+*/
 package example.jonathan.tipping;
 
+import android.app.Activity;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -11,7 +17,6 @@ public class EtOnFocusChangeListener implements View.OnFocusChangeListener
     public static EtOnFocusChangeListener getInstance() { return ourInstance; }
 
     public void onFocusChange(View v, boolean hasFocus) {
-        MainActivity.debugL("onSoftKeyboardShow run");
         //0th element string dummy node for case.
         // clear edittext when user onclick, and store current string as default.
         if (!(v instanceof EditText))
@@ -24,7 +29,12 @@ public class EtOnFocusChangeListener implements View.OnFocusChangeListener
         {
             MainActivity.getInputViews().parseTextView((TextView) v);
             Calc.getInstance().calc();
-            MainActivity.getOutputViews().outputTextView((TextView) v);
+            // MainActivity.getOutputViews().outputTextView((TextView) v);
+
+            // activity root component tree
+            ViewGroup root = ((Activity)v.getContext()).findViewById(R.id.main_view);
+            // update views.
+            MainActivity.getOutputViews().outputAllTextView(root);
         }
     }
 }

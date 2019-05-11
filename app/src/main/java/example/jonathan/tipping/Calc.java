@@ -70,15 +70,15 @@ public class Calc {
         //switch off is per person for size > 1.
         //switch on is one person.
         Log.d("ACTIVITY_MAIN", "size_int " + size_int);
-        Log.d("ACTIVITY_MAIN", "tipPer in CALC " + MainActivity.et_strings.get(R.id.etTipPer));
+        Log.d("ACTIVITY_MAIN", "tipPer in CALC " + in.tv_num_data.get(R.id.etTipPer));
         if (Looper.myLooper() == Looper.getMainLooper())
-            MainActivity.debugL("MAINTHREADDDD CALC " + MainActivity.et_strings.get(R.id.etTipPer));
+            MainActivity.debugL("MAINTHREADDDD CALC " + in.tv_num_data.get(R.id.etTipPer));
         else
-            MainActivity.debugL("NOT MAIN THREAD CALC: " + MainActivity.et_strings.get(R.id.etTipPer));
-        MainActivity.debugL("Before calctipNum " + MainActivity.et_strings.get(R.id.teBill));
-        MainActivity.debugL("Bill: " + MainActivity.et_strings.get(R.id.teBill));
+            MainActivity.debugL("NOT MAIN THREAD CALC: " + in.tv_num_data.get(R.id.etTipPer));
+        MainActivity.debugL("Before calctipNum " + in.tv_num_data.get(R.id.teBill));
+        MainActivity.debugL("Bill: " + in.tv_num_data.get(R.id.teBill));
         MainActivity.debugL("div:" + div);
-        MainActivity.debugL("tipPer:" + MainActivity.et_strings.get(R.id.etTipPer));
+        MainActivity.debugL("tipPer:" + in.tv_num_data.get(R.id.etTipPer));
 
         double dBill = in.tv_num_data.get(R.id.teBill).doubleValue();
 

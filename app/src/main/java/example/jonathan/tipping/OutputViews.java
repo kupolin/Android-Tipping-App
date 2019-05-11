@@ -1,7 +1,11 @@
+/*
+    @Author: Jonathan Lin (jonathan.lin108@gmail.com)
+*/
+
 package example.jonathan.tipping;
 
 import android.text.InputType;
-import android.util.SparseArray;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -9,33 +13,35 @@ import android.widget.TextView;
 import java.util.Locale;
 
 public class OutputViews {
-    private InputViews in;
-    public OutputViews(InputViews in){this.in = in;}
 
     // output single view
     // if current view is empty string take care of it.
-    public void outputTextView(TextView v)
+    public void  outputTextView(TextView v)
     {
-        // is V a num text view.
+        String out;
         switch (v.getInputType())
         {
+            //int #
             case InputType.TYPE_CLASS_NUMBER:
-                String out = in.tv_num_data.get(v.getId()).toString();
+                out = MainActivity.getInputViews().tv_num_data.get(v.getId()).toString();
+                break;
 
-                // tv_data if type int, then there is no formatting.
-                out = v.getInputType() == InputType.TYPE_NUMBER_FLAG_DECIMAL
-                        ? String.format(new Locale("en"), "%.2f", out)
-                        : out;
-                v.setText(out);
+            //decimal #
+
+            case InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER:
+                out = MainActivity.getInputViews().tv_num_data.get(v.getId()).toString();
+                Log.d("MAINACTIVITY", "view : " + v.getContext().getResources().getResourceEntryName(v.getId()) + out);
+              //  Log.d("MAINACTIVITY", "view : " + String.format("{0:00}", out));
+                out = String.format(new Locale("en"), "%.2f", MainActivity.getInputViews().tv_num_data.get(v.getId()).doubleValue());
                 break;
 
             // textview default type is string.
             default:
-                v.setText(in.tv_str_data.get(v.getId()));
+                out = MainActivity.getInputViews().tv_str_data.get(v.getId());
         }
+        v.setText(out);
 
         //if cases such as check for empty string.
-
         /*
             // case int:
             out = num.doubleValue() == num.intValue()
@@ -57,8 +63,4 @@ public class OutputViews {
             outputTextView((TextView) v);
         }
     }
-
-    //output to all textviews
-    public void outputStrTextView(SparseArray<String> str)
-    {}
 }

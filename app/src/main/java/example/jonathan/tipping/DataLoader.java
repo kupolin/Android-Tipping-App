@@ -1,3 +1,7 @@
+/*
+    @Author: Jonathan Lin (jonathan.lin108@gmail.com)
+*/
+
 package example.jonathan.tipping;
 
 

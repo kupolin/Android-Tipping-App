@@ -1,52 +1,34 @@
+/*
+    @Author: Jonathan Lin (jonathan.lin108@gmail.com)
+*/
+
 package example.jonathan.tipping;
 
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import android.util.Log;
 import java.lang.String;
-import java.util.HashMap;
-
-
-
-/*
-OnFocusChangeListener can be used to detect view onFocus
-onFocus happens before onClick, right when view is clicked.
-After view is focused, and user clicks inside the view, onClick is then called.
-
-OnFocus can only happen OnFocus first gains focus and last gains focus of a view.
-
-This is used to replace SoftKeyboard.java because SoftKeyboard.java detects the blinker inside the editText.
- */
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class MainActivity extends AppCompatActivity
 {
     private static final boolean DEBUG = true;
     private static final String ACTIVITY = "ACTIVITY_MAIN";
-    static final String TE_BILL_KEY = "TE_BILL_KEY";
 
-    // create a hashmap where key: string, value: string. key is variable name
-    // billStr, tipPerStr, sizeStr are all EditText Strings
-    static HashMap<Integer, Number> et_strings;
+    private final static InputViews in = new InputViews();
+    private final static OutputViews out = new OutputViews();
+
+    public static InputViews getInputViews() {return in;}
+    public static OutputViews getOutputViews(){return out;}
 
     public static void debugL(String msg)
     {
         Log.d(ACTIVITY, msg);
-    }
-
-    // need to initialize default values to static strings (goto top of the
-    // file) for when the app first loads and hit onCreate(). default string
-    // value is null
-    private void initDefaultValues(EditText teBill, EditText etTipPer, EditText etSize)
-    {
-        /*
-        et_strings = new HashMap<>();
-        et_strings.put(R.id.teBill, teBill.getText().toString());
-        et_strings.put(R.id.etTipPer, etTipPer.getText().toString());
-        et_strings.put(R.id.etSize, etSize.getText().toString());
-        */
     }
 
     /*
@@ -54,43 +36,44 @@ public class MainActivity extends AppCompatActivity
     */
     private void initialize()
     {
-        InputViews in = new InputViews();
-        // parses all text views and puts them in a model.
-        in.parseAllTextViews((ViewGroup)findViewById(R.id.rootViewGroup));
+        // root component view
+        ViewGroup root = findViewById(R.id.main_view);
 
-        //saving edit text fields.
-        final EditText teBill = findViewById(R.id.teBill);
-        final EditText etTipPer = findViewById(R.id.etTipPer);
-        final EditText etSize = findViewById(R.id.etSize);
+        // bfs all children nodes of vg.
+        Queue<ViewGroup> que = new ArrayDeque<>();
+        que.add(root);
 
-        final Switch swSize = findViewById(R.id.swSize);
-
-        final Button btTip1 = findViewById(R.id.btTip1);
-        final Button btTip2 = findViewById(R.id.btTip2);
-        final Button btTip3 = findViewById(R.id.btTip3);
-
-        //initialize
-       // initDefaultValues(teBill, etTipPer, etSize);
-
-
-        //initialize edit text listeners
-        teBill.setOnEditorActionListener(UIHandler.getEditTextEditorListener());
-        etTipPer.setOnEditorActionListener(UIHandler.getEditTextEditorListener());
-        etSize.setOnEditorActionListener(UIHandler.getEditTextEditorListener());
-
-        //set onfocus listener
-        teBill.setOnFocusChangeListener(UIHandler.getEditTextFocusListener());
-        etTipPer.setOnFocusChangeListener(UIHandler.getEditTextFocusListener());
-        etSize.setOnFocusChangeListener(UIHandler.getEditTextFocusListener());
-
-        //initialize switch listener
-        swSize.setOnCheckedChangeListener(UIHandler.getSwitchListener());
-
-    //initialize button listeners
-        btTip1.setOnClickListener(UIHandler.getButtonListener());
-        btTip2.setOnClickListener(UIHandler.getButtonListener());
-        btTip3.setOnClickListener(UIHandler.getButtonListener());
-}
+        while(que.peek() != null)
+        {
+            ViewGroup vg = que.remove();
+            for(int i = 0; i < vg.getChildCount(); i++)
+            {
+                View v = vg.getChildAt(i);
+                if(v instanceof ViewGroup)
+                    que.add((ViewGroup) v);
+                else if(v instanceof EditText)
+                {
+                    ((EditText)v).setOnEditorActionListener(EtEditorListener.getInstance());
+                    v.setOnFocusChangeListener(EtOnFocusChangeListener.getInstance());
+                }
+                else if(v instanceof Switch)
+                {
+                    ((Switch) v).setOnCheckedChangeListener(SwOnCheckedChangedListener.getInstance());
+                }
+                else if(v instanceof Button)
+                {
+                    v.setOnClickListener(BtOnClickListener.getInstance());
+                }
+                else
+                {
+                    if(v instanceof TextView)
+                        continue;
+                    Log.d("MAINACTVITY", "!!! Initialize v  was not found: " + v.getClass().toString());
+                   // throw new IllegalArgumentException();
+                }
+            }
+        }
+    }
 
     @Override
     public void onStart()
@@ -137,21 +120,25 @@ public class MainActivity extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
 
-
-       // dataLoader(savedInstanceState);
+        // dataLoader(savedInstanceState);
 
         // set the user interface layout for this activity
         // the layout file is defined in the project res/layout/main_activity.xml file
         setContentView(R.layout.activity_main);
 
+        // root component view
+        ViewGroup root = findViewById(R.id.main_view);
+        // initialize all text views and puts them in a model.
+        in.parseAllTextViews(root);
         initialize();
 
     }
 
     // This callback is called only when there is a saved instance that is previously saved by using
-// onSaveInstanceState(). We restore some state in onCreate(), while we can optionally restore
-// other state here, possibly usable after onStart() has completed.
-// The savedInstanceState Bundle is same as the one used in onCreate().
+    // onSaveInstanceState(). We restore some state in onCreate(), while we can optionally restore
+    // other state here, possibly usable after onStart() has completed.
+    // The savedInstanceState Bundle is same as the one used in onCreate().
+
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         if(DEBUG)
