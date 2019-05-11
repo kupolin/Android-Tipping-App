@@ -33,7 +33,7 @@ public class EtEditorListener implements TextView.OnEditorActionListener
             default:
 
             //calculator
-            Calc.getInstance().calc(MainActivity.getInputViews());
+            Calc.getInstance().calc();
 
             //keyboard
             InputMethodManager im = (InputMethodManager) v.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);

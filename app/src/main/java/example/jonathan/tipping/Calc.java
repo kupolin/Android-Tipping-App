@@ -9,9 +9,11 @@ import android.util.Log;
 
 //controller that calculates the calctipNum, and calcTotal
 public class Calc {
-    private static final Calc calc = new Calc();
-    public static Calc getCalc() { return calc; }
+    private static final Calc ourInstance = new Calc();
 
+    public static Calc getInstance() { return ourInstance; }
+
+    private Calc() {}
     /*
     input:
         bill: etBill input
@@ -51,8 +53,9 @@ public class Calc {
         return bill + tip;
     }
 
-    public void calc (InputViews in)
+    public void calc ()
     {
+        InputViews in = MainActivity.getInputViews();
         //switch case for tip per person.
         //Switch sw = v.findViewById(R.id.swSize);
 
