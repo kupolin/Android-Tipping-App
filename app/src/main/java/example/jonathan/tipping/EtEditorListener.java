@@ -24,7 +24,6 @@ public class EtEditorListener implements TextView.OnEditorActionListener
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
     {
         //some error check for return false?
-
         Log.d("ACTIVITY_MAIN", "EditTextListener OnEditorAction");
         switch (actionId)
         {
@@ -32,16 +31,13 @@ public class EtEditorListener implements TextView.OnEditorActionListener
                 Log.d("ACTIVITY_MAIN", "Action done");
                 MainActivity.getInputViews().parseTextView(v);
                 Calc.getInstance().calc();
-
                 // find root of activity component tree.
                 ViewGroup root = ((Activity)v.getContext()).findViewById(R.id.main_view);
                 // update views
                 MainActivity.getOutputViews().outputAllTextView(root);
                 break;
-
             default:
         }
-
         //keyboard
         InputMethodManager im = (InputMethodManager) v.getContext().getSystemService(Service.INPUT_METHOD_SERVICE);
         //cannot use HIDE_IMPLICIT_ONLY, because default keyboard service is opened.

@@ -14,14 +14,14 @@ import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
-public class InputViews {
+class InputViews {
     // sparsearray to save memory. O(h). else use hashmap.
-    public final SparseArray<Number> tv_num_data = new SparseArray<>();
-    public final SparseArray<String> tv_str_data = new SparseArray<>();
-    public final SparseBooleanArray tv_bool_data = new SparseBooleanArray();
+    final SparseArray<Number> tv_num_data = new SparseArray<>();
+    final SparseArray<String> tv_str_data = new SparseArray<>();
+    final SparseBooleanArray tv_bool_data = new SparseBooleanArray();
 
     // onCreate loader, for default values setting. Before user interaction.
-    public void parseAllTextViews(ViewGroup root)
+    void parseAllTextViews(ViewGroup root)
     {
         for(int i = 0; i < root.getChildCount(); i++)
         {
@@ -34,7 +34,7 @@ public class InputViews {
         }
     }
 
-    public void parseTextView(TextView v)
+    void parseTextView(TextView v)
     {
         //if text view is empty string do not reparse the view input.
         if (v.getText().toString().isEmpty() && !(v instanceof Switch))
@@ -44,7 +44,8 @@ public class InputViews {
         switch (v.getInputType())
         {
             case InputType.TYPE_CLASS_NUMBER:
-                Number etNum = Integer.parseInt(v.getText().toString());
+                int etNum = Integer.parseInt(v.getText().toString());
+                //for edit text Number can only be unsigned ints.
                 tv_num_data.put(v.getId(), etNum);
                 break;
 

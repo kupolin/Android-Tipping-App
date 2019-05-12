@@ -23,6 +23,9 @@ public class MainActivity extends AppCompatActivity
     private final static InputViews in = new InputViews();
     private final static OutputViews out = new OutputViews();
 
+    public static final int lessThan = -1;
+    public static final int greaterThan = 1;
+
     public static InputViews getInputViews() {return in;}
     public static OutputViews getOutputViews(){return out;}
 

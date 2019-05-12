@@ -4,7 +4,6 @@
 package example.jonathan.tipping;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -29,7 +28,6 @@ public class EtOnFocusChangeListener implements View.OnFocusChangeListener
         {
             MainActivity.getInputViews().parseTextView((TextView) v);
             Calc.getInstance().calc();
-            // MainActivity.getOutputViews().outputTextView((TextView) v);
 
             // activity root component tree
             ViewGroup root = ((Activity)v.getContext()).findViewById(R.id.main_view);
