@@ -16,8 +16,7 @@ public class EtOnFocusChangeListener implements View.OnFocusChangeListener
     public static EtOnFocusChangeListener getInstance() { return ourInstance; }
 
     public void onFocusChange(View v, boolean hasFocus) {
-        //0th element string dummy node for case.
-        // clear edittext when user onclick, and store current string as default.
+        // clear EditText when user onclick, and store current string as default.
         if (!(v instanceof EditText))
             throw new IllegalArgumentException("view must be an edit text");
 
@@ -27,7 +26,7 @@ public class EtOnFocusChangeListener implements View.OnFocusChangeListener
         else
         {
             MainActivity.getInputViews().parseTextView((TextView) v);
-            Calc.getInstance().calc();
+            Calc.getInstance().calc(v);
 
             // activity root component tree
             ViewGroup root = ((Activity)v.getContext()).findViewById(R.id.main_view);

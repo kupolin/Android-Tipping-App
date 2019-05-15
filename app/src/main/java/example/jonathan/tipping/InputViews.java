@@ -1,10 +1,10 @@
 /*
     @Author: Jonathan Lin (jonathan.lin108@gmail.com)
+    TextViewParser
 */
 
 package example.jonathan.tipping;
 
-import android.content.Context;
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
@@ -13,7 +13,7 @@ import android.view.ViewGroup;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
-
+// InputViews depends on perseistaence dat on intialization;
 class InputViews {
     // sparsearray to save memory. O(h). else use hashmap.
     final SparseArray<Number> tv_num_data = new SparseArray<>();
@@ -21,6 +21,7 @@ class InputViews {
     final SparseBooleanArray tv_bool_data = new SparseBooleanArray();
 
     // onCreate loader, for default values setting. Before user interaction.
+    // TODO: dfs or bfs traversal for all ViewGroup nodes
     void parseAllTextViews(ViewGroup root)
     {
         for(int i = 0; i < root.getChildCount(); i++)
@@ -54,8 +55,9 @@ class InputViews {
                                 Double.parseDouble(v.getText().toString()));
                 break;
 
-            // textview default type is string. except widgets like switches
+            // TextView default type is string.
             default:
+                // Switches in this projects are empty string.
                 if(v instanceof Switch)
                 {
                     tv_bool_data.put(v.getId(), ((Switch) v).isChecked());

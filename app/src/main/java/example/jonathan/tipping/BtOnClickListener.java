@@ -23,7 +23,9 @@ public class BtOnClickListener implements View.OnClickListener
     @Override
     public void onClick(View v)
     {
-        // get button tip %
+        Log.d("MAINACTIVITY", "OnClick Listener!!");
+        Activity activity = (Activity)v.getContext();
+        Log.d("MAINACTIVITY", "&&&&&&&!!! buttonclickClassName: " + activity.getClass().getSimpleName());
         SparseArray<Number> tv_num_data = MainActivity.getInputViews().tv_num_data;
 
         /*
@@ -31,7 +33,7 @@ public class BtOnClickListener implements View.OnClickListener
             when any button is clicked, etTipPer needs to be reparse for case: cursor inside
             etTipPer EditText
         */
-        //reparse etTipPer for when cursor is inside it.
+
         EditText etTipPer = ((Activity)v.getContext()).findViewById(R.id.etTipPer);
         MainActivity.getInputViews().parseTextView(etTipPer);
 
@@ -62,11 +64,12 @@ public class BtOnClickListener implements View.OnClickListener
                 //tip%10 15 20 button.
                 //tv_num_data.put(R.id.etTipPer, tv_num_data.get(v.getId()));
         }
-        //bt >, <, 10%, 15%, 20%
+
+        // update data etTipPer or etSize for when bt >, <, 10%, 15%, 20%
         tv_num_data.put(id, tv_num_data.get(v.getId()).intValue());
 
         //calculate tip total and bill total
-        Calc.getInstance().calc();
+        Calc.getInstance().calc(v);
 
         // output
         ViewGroup root = ((Activity)v.getContext()).findViewById(R.id.main_view);

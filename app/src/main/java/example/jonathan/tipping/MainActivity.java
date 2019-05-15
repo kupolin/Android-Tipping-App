@@ -5,6 +5,8 @@
 package example.jonathan.tipping;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,16 +17,39 @@ import java.lang.String;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
+
+// TODO: change in out to stack variables.
+// TODO: minimize static variables. Static fields are only used if you want persistent variables used across full runtime among ALL activities.
+// TODO: IF static variable is associated to ACTIVITY life cycle, then MAKE IT LOCAL.
+// TODO: when activity calls onDestroy(): class loaders are NOT unloaded. Thus, static data is NOT collected.
+
 public class MainActivity extends AppCompatActivity
 {
     private static final boolean DEBUG = true;
     private static final String ACTIVITY = "ACTIVITY_MAIN";
 
+    //TODO: redo make it local because these depends on activity lifecycle.
     private final static InputViews in = new InputViews();
     private final static OutputViews out = new OutputViews();
 
-    public static final int lessThan = -1;
-    public static final int greaterThan = 1;
+    /*
+    SETTER
+    // MY_PREFS_NAME - a static String variable like:
+//public static final String MY_PREFS_NAME = "MyPrefsFile";
+SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+ editor.putString("name", "Elena");
+ editor.putInt("idName", 12);
+ editor.apply();
+     */
+/*
+GETTER
+SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+String restoredText = prefs.getString("text", null);
+if (restoredText != null) {
+  String name = prefs.getString("name", "No name defined");//"No name defined" is the default value.
+  int idName = prefs.getInt("idName", 0); //0 is the default value.
+}
+ */
 
     public static InputViews getInputViews() {return in;}
     public static OutputViews getOutputViews(){return out;}
@@ -37,7 +62,7 @@ public class MainActivity extends AppCompatActivity
     /*
         Initialize all ui elements / construct listeners.
     */
-    private void initialize()
+    private void initListeners(SharedPreferences dataGetter, SharedPreferences.Editor dataSetter)
     {
         // root component view
         ViewGroup root = findViewById(R.id.main_view);
@@ -54,6 +79,7 @@ public class MainActivity extends AppCompatActivity
                 View v = vg.getChildAt(i);
                 if(v instanceof ViewGroup)
                     que.add((ViewGroup) v);
+
                 else if(v instanceof EditText)
                 {
                     ((EditText)v).setOnEditorActionListener(EtEditorListener.getInstance());
@@ -129,12 +155,18 @@ public class MainActivity extends AppCompatActivity
         // the layout file is defined in the project res/layout/main_activity.xml file
         setContentView(R.layout.activity_main);
 
+        //init data loaders
+        // instantiated here because persistent data loader is tied to this activity
+        final SharedPreferences dataLoaderGetter = getSharedPreferences(MainActivity.class.getSimpleName(), MODE_PRIVATE);
+        final SharedPreferences.Editor dataLoaderSetter = getSharedPreferences(MainActivity.class.getSimpleName(), MODE_PRIVATE).edit();
+
         // root component view
         ViewGroup root = findViewById(R.id.main_view);
         // initialize all text views and puts them in a model.
         in.parseAllTextViews(root);
-        initialize();
-
+        //Calc.getInstance().calc(v);
+        out.outputAllTextView(root);
+        initListeners(dataLoaderGetter, dataLoaderSetter);
     }
 
     // This callback is called only when there is a saved instance that is previously saved by using

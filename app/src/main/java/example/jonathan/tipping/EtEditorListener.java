@@ -30,7 +30,7 @@ public class EtEditorListener implements TextView.OnEditorActionListener
             case EditorInfo.IME_ACTION_DONE:
                 Log.d("ACTIVITY_MAIN", "Action done");
                 MainActivity.getInputViews().parseTextView(v);
-                Calc.getInstance().calc();
+                Calc.getInstance().calc(v);
                 // find root of activity component tree.
                 ViewGroup root = ((Activity)v.getContext()).findViewById(R.id.main_view);
                 // update views
@@ -43,9 +43,6 @@ public class EtEditorListener implements TextView.OnEditorActionListener
         //cannot use HIDE_IMPLICIT_ONLY, because default keyboard service is opened.
         //i.e. numeric keyboard overlay over alpha keyboard.
         im.hideSoftInputFromWindow(v.getWindowToken(), 0);
-
-        //on accept, focus view is not auto cleared.
-        //v.clearFocus();
         return true;
     }
 }

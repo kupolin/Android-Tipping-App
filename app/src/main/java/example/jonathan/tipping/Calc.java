@@ -4,14 +4,19 @@
 
 package example.jonathan.tipping;
 
+import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+
+import static android.content.Context.MODE_PRIVATE;
 
 //controller that calculates the calctipNum, and calcTotal
-public class Calc {
+class Calc {
     private static final Calc ourInstance = new Calc();
 
-    public static Calc getInstance() { return ourInstance; }
+    static Calc getInstance() { return ourInstance;}
 
     private Calc() {}
     /*
@@ -53,7 +58,7 @@ public class Calc {
         return bill + tip;
     }
 
-    public void calc ()
+    void calc (View v)
     {
         InputViews in = MainActivity.getInputViews();
         //switch case for tip per person.
@@ -89,6 +94,14 @@ public class Calc {
         if(!in.tv_bool_data.get(R.id.swSize))
             dTotal /= size_int;
 
+        // persist data
+        Activity activity = (Activity)v.getContext();
+        final SharedPreferences.Editor dataSetter = activity.getSharedPreferences(activity.getClass().getSimpleName(), MODE_PRIVATE).edit();
+        dataSetter.putFloat(Float.toString(R.id.tvTipNum), (float)dTipNumResult);
+        dataSetter.putFloat(Float.toString(R.id.tvTotalNum), (float)dTotal);
+        dataSetter.apply();
+
+        // store in ram
         in.tv_num_data.put(R.id.tvTipNum, dTipNumResult);
         in.tv_num_data.put(R.id.tvTotalNum, dTotal);
     }
