@@ -9,15 +9,20 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.*;
 import android.util.Log;
 import java.lang.String;
 import java.util.ArrayDeque;
+import java.util.Locale;
 import java.util.Queue;
 
-
+/*
+If refactor any activity name, make sure to clear the SharedPreference with SharedPreference.clear()
+or else previous activity name data will be stored under activity name.
+ */
 // TODO: change in out to stack variables.
 // TODO: minimize static variables. Static fields are only used if you want persistent variables used across full runtime among ALL activities.
 // TODO: IF static variable is associated to ACTIVITY life cycle, then MAKE IT LOCAL.
@@ -28,9 +33,9 @@ public class MainActivity extends AppCompatActivity
     private static final boolean DEBUG = true;
     private static final String ACTIVITY = "ACTIVITY_MAIN";
 
-    //TODO: redo make it local because these depends on activity lifecycle.
-    private final static InputViews in = new InputViews();
-    private final static OutputViews out = new OutputViews();
+    // not final for when system destroys this activity for memory.
+    private static InputViews in = new InputViews();
+    private static OutputViews out = new OutputViews();
 
     /*
     SETTER
@@ -59,10 +64,62 @@ if (restoredText != null) {
         Log.d(ACTIVITY, msg);
     }
 
+    private void initData(ViewGroup root)
+    {
+        SharedPreferences dataGetter = getSharedPreferences(this.getClass().getSimpleName(), MODE_PRIVATE);
+/*
+        if(true)
+        {
+            set.clear();
+            return;
+        }
+*/
+        //create a bfs
+        Queue<ViewGroup> que = new ArrayDeque<>();
+        que.add(root);
+
+        while(!que.isEmpty())
+        {
+            ViewGroup v = que.remove();
+            for (int i = 0; i < root.getChildCount(); i++)
+            {
+                if (v.getChildAt(i) instanceof ViewGroup)
+                    que.add((ViewGroup) root.getChildAt(i));
+                else if(v.getChildAt(i) instanceof TextView)
+                {
+                    int vId = v.getChildAt(i).getId();
+                    debugL(v.getContext().getResources().getResourceEntryName(vId));
+                    switch (((TextView)v.getChildAt(i)).getInputType())
+                    {
+                        //int #
+                        case InputType.TYPE_CLASS_NUMBER:
+                            debugL("INITDATA " + "id: " + Integer.toString(vId) + "dataGetter: " + dataGetter.getInt(Integer.toString(vId),-1));
+                            MainActivity.in.tv_num_data.put(vId, dataGetter.getInt(Integer.toString(vId), MainActivity.in.tv_num_data.get(vId).intValue()));
+                            break;
+
+                        //decimal #
+                        case InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER:
+                            debugL("INITDATA " + "id: " + Integer.toString(vId) + "dataGetter: " + dataGetter.getFloat(Integer.toString(vId),-1));
+                            MainActivity.in.tv_num_data.put(vId, dataGetter.getFloat(Integer.toString(vId),MainActivity.in.tv_num_data.get(vId).floatValue()));
+                            break;
+
+                        // textview default type is string.
+                        default:
+                            //check dataGetter.getString instead of boolean.
+                            /*
+                            if(v.getChildAt(i) instanceof Switch)
+                                MainActivity.in.tv_bool_data.put(vId, dataGetter.getBoolean(Integer.toString(vId), MainActivity.in.tv_bool_data.get(vId)));
+                            */
+                           // MainActivity.in.tv_str_data.put(vId, dataGetter.getString(Integer.toString(v.getId()),""));
+                    }
+                }
+            }
+        }
+    }
     /*
         Initialize all ui elements / construct listeners.
     */
-    private void initListeners(SharedPreferences dataGetter, SharedPreferences.Editor dataSetter)
+    private void initListeners()
     {
         // root component view
         ViewGroup root = findViewById(R.id.main_view);
@@ -102,6 +159,7 @@ if (restoredText != null) {
                 }
             }
         }
+        Log.d("MAIN_ACTIVITY", "INITLISTERNES");
     }
 
     @Override
@@ -140,6 +198,8 @@ if (restoredText != null) {
         super.onDestroy();
         if(DEBUG)
             Log.d(ACTIVITY,"onDestroy");
+        MainActivity.in = null;
+        MainActivity.out = null;
     }
 
     @Override
@@ -148,25 +208,38 @@ if (restoredText != null) {
             Log.d(ACTIVITY, "OnCreate");
 
         super.onCreate(savedInstanceState);
-
+        Log.d("ACTIVITY_MAIN", "209");
         // dataLoader(savedInstanceState);
 
         // set the user interface layout for this activity
         // the layout file is defined in the project res/layout/main_activity.xml file
         setContentView(R.layout.activity_main);
-
-        //init data loaders
-        // instantiated here because persistent data loader is tied to this activity
-        final SharedPreferences dataLoaderGetter = getSharedPreferences(MainActivity.class.getSimpleName(), MODE_PRIVATE);
-        final SharedPreferences.Editor dataLoaderSetter = getSharedPreferences(MainActivity.class.getSimpleName(), MODE_PRIVATE).edit();
+        if(MainActivity.in == null)
+            MainActivity.in = new InputViews();
+        if(MainActivity.out == null)
+            MainActivity.out = new OutputViews();
 
         // root component view
         ViewGroup root = findViewById(R.id.main_view);
+        Log.d("ACTIVITY_MAIN", "222");
         // initialize all text views and puts them in a model.
-        in.parseAllTextViews(root);
+        in.parseAllTextViews(root, false);
+        // load persistent data after view load.
+        initData(root);
+        //TODO: load from saved instance
+        /*
+                if(savedInstanceState != null)
+                initData(root);
+            else
+             in.parseAllTextViews(root);
+         */
+
         //Calc.getInstance().calc(v);
+
+        Log.d("ACTIVITY_MAIN", "236");
         out.outputAllTextView(root);
-        initListeners(dataLoaderGetter, dataLoaderSetter);
+        Log.d("ACTIVITY_MAIN", "238");
+        initListeners();
     }
 
     // This callback is called only when there is a saved instance that is previously saved by using
