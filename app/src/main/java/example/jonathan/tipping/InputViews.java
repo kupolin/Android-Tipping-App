@@ -16,8 +16,6 @@ import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import static android.content.Context.MODE_PRIVATE;
-
 // InputViews depends on perseistaence dat on intialization;
 class InputViews {
     // sparsearray to save memory. O(h). else use hashmap.
@@ -30,7 +28,7 @@ class InputViews {
         onCreate initialization check so it doesn't overwrite persistent data
         onCreate = true if called from activity onCreate() else false
      */
-    void parseAllTextViews(ViewGroup root, boolean onCreate)
+    void parseAllTextViews(ViewGroup root)
     {
         for(int i = 0; i < root.getChildCount(); i++)
         {
@@ -39,7 +37,7 @@ class InputViews {
             if(!(v instanceof TextView))
                 continue;
 
-            parseTextView((TextView) v, onCreate);
+            parseTextView((TextView) v);
         }
     }
 
@@ -47,7 +45,7 @@ class InputViews {
         onCreate initialization check so it doesn't overwrite persistent data
         onCreate = true if called from activity onCreate() else false
      */
-    void parseTextView(TextView v, boolean onCreate)
+    void parseTextView(TextView v)
     {
      //    Log.d("MAIN_ACTIVITY", "PARSETEXTVIEW");
         //if text view is empty string do not reparse the view input.
@@ -55,25 +53,19 @@ class InputViews {
             return;
 
     //    Log.d("MAIN_ACTIVITY", "PARSETEXTVIEW + " + v.getContext().getResources().getResourceEntryName(v.getId()) + ": " + v.getText().toString());
-        Activity activity = (Activity)v.getContext();
-        final SharedPreferences.Editor dataSetter = activity.getSharedPreferences(activity.getClass().getSimpleName(), MODE_PRIVATE).edit();
+
         switch (v.getInputType())
         {
             case InputType.TYPE_CLASS_NUMBER:
                 int etNum = Integer.parseInt(v.getText().toString());
                 // for edit text Number can only be unsigned ints.
                 tv_num_data.put(v.getId(), etNum);
-                if(onCreate)
-                    dataSetter.putInt(Integer.toString(v.getId()),etNum);
-
                 break;
 
             case InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER:
                 double etF =  Double.parseDouble(v.getText().toString());
                 Log.d("MAIN_ACTIVITY", "InputViews case: " + etF);
                 tv_num_data.put(v.getId(), etF);
-                if(onCreate)
-                   dataSetter.putLong(Integer.toString(v.getId()), Double.doubleToLongBits(etF));
                 break;
 
             // TextView default type is string.
@@ -82,17 +74,9 @@ class InputViews {
                 if(v instanceof Switch)
                 {
                     tv_bool_data.put(v.getId(), ((Switch) v).isChecked());
-                    if(onCreate)
-                        dataSetter.putBoolean(Integer.toString(v.getId()), ((Switch) v).isChecked());
-
                 }
-                else if(onCreate)
-                    dataSetter.putString(Integer.toString(v.getId()), v.getText().toString());
                 tv_str_data.put(v.getId(), v.getText().toString());
         }
-        if(onCreate)
-            dataSetter.apply();
-
     }
 
     // edit text is always a number.

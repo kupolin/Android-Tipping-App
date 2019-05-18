@@ -38,7 +38,7 @@ public class BtOnClickListener implements View.OnClickListener
         */
 
         EditText etTipPer = ((Activity)v.getContext()).findViewById(R.id.etTipPer);
-        MainActivity.getInputViews().parseTextView(etTipPer, true);
+        MainActivity.getInputViews().parseTextView(etTipPer);
 
         Log.d("MAINACTIVITY","BtOnClickListener: " + (v.getContext()).getResources().getResourceEntryName(v.getId()));
         int id = R.id.etTipPer;

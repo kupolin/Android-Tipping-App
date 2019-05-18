@@ -224,7 +224,7 @@ if (restoredText != null) {
         // root component view
         ViewGroup root = findViewById(R.id.main_view);
         // initialize all text views and puts them in a model.
-        in.parseAllTextViews(root, false);
+        in.parseAllTextViews(root);
         // load persistent data after view load.
         initData(root);
         //TODO: load from saved instance

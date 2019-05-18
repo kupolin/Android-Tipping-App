@@ -12,6 +12,7 @@ import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -25,26 +26,40 @@ class OutputViews {
     void  outputTextView(TextView v)
     {
         String out;
-
         SparseArray<Number> in = MainActivity.getInputViews().tv_num_data;
+
+        // persistent data setter
+        Activity activity = (Activity)v.getContext();
+        final SharedPreferences.Editor dataSetter = activity.getSharedPreferences(activity.getClass().getSimpleName(), MODE_PRIVATE).edit();
+
         switch (v.getInputType())
         {
             //int #
             case InputType.TYPE_CLASS_NUMBER:
+                dataSetter.putInt(Integer.toString(v.getId()),in.get(v.getId()).intValue());
                 out = in.get(v.getId()).toString();
                 break;
 
             //decimal #
-
             case InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER:
+                dataSetter.putLong(Integer.toString(v.getId()), Double.doubleToLongBits(in.get(v.getId()).doubleValue()));
                 out = String.format(new Locale("en"), "%.2f", in.get(v.getId()).doubleValue());
                 break;
 
             // textview default type is string.
             default:
+                if(v instanceof Switch)
+                {
+                    // Each Switch text string will not be saved.
+                    // Can only choose between text field or on/off to store
+                    // TODO: Fix: store by v.getId() + "toggle" and v.getId() + "text"
+                    dataSetter.putBoolean(Integer.toString(v.getId()), ((Switch) v).isChecked());
+                }
+                else
+                    dataSetter.putString(Integer.toString(v.getId()), v.getText().toString());
                 out = MainActivity.getInputViews().tv_str_data.get(v.getId());
         }
-
+        dataSetter.apply();
         v.setText(out);
 
         if(v instanceof EditText)

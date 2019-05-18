@@ -94,12 +94,6 @@ class Calc {
         if(!in.tv_bool_data.get(R.id.swSize))
             dTotal /= size_int;
 
-        // persist data
-        Activity activity = (Activity)v.getContext();
-        final SharedPreferences.Editor dataSetter = activity.getSharedPreferences(activity.getClass().getSimpleName(), MODE_PRIVATE).edit();
-        dataSetter.putLong(Integer.toString(R.id.tvTipNum), Double.doubleToLongBits(dTipNumResult));
-        dataSetter.putLong(Integer.toString(R.id.tvTotalNum), Double.doubleToLongBits(dTotal));
-        dataSetter.apply();
 
         // store in ram
         in.tv_num_data.put(R.id.tvTipNum, dTipNumResult);

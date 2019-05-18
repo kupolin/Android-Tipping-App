@@ -29,7 +29,7 @@ public class EtEditorListener implements TextView.OnEditorActionListener
         {
             case EditorInfo.IME_ACTION_DONE:
                 Log.d("ACTIVITY_MAIN", "Action done");
-                MainActivity.getInputViews().parseTextView(v, true);
+                MainActivity.getInputViews().parseTextView(v);
                 Calc.getInstance().calc(v);
                 // find root of activity component tree.
                 ViewGroup root = ((Activity)v.getContext()).findViewById(R.id.main_view);

@@ -26,14 +26,13 @@ public class SwOnCheckedChangedListener implements CompoundButton.OnCheckedChang
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
     {
         //input: parse switch
-        MainActivity.getInputViews().parseTextView(buttonView, true);
+        MainActivity.getInputViews().parseTextView(buttonView);
 
         TextView etSize = ((Activity)buttonView.getContext()).findViewById(R.id.etSize);
         // do not reparse size view if text field is 0.
         if(!etSize.getText().toString().matches("0*"))
             MainActivity.getInputViews().parseTextView(
-                            (TextView)((Activity)buttonView.getContext()).findViewById(R.id.etSize),
-                    true);
+                            (TextView)((Activity)buttonView.getContext()).findViewById(R.id.etSize));
 //how to know which activity is accessing the information.
         Calc.getInstance().calc(buttonView);
         //output
