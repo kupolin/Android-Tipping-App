@@ -4,15 +4,20 @@
 package example.jonathan.tipping;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import static android.content.Context.MODE_PRIVATE;
+
+//TODO: need persist data here.
 public class BtOnClickListener implements View.OnClickListener
 {
     private static final BtOnClickListener ourInstance = new BtOnClickListener();
+    private SharedPreferences.Editor Context;
 
     public static BtOnClickListener getInstance() {
         return ourInstance;
@@ -23,9 +28,7 @@ public class BtOnClickListener implements View.OnClickListener
     @Override
     public void onClick(View v)
     {
-        Log.d("MAINACTIVITY", "OnClick Listener!!");
-        Activity activity = (Activity)v.getContext();
-        Log.d("MAINACTIVITY", "&&&&&&&!!! buttonclickClassName: " + activity.getClass().getSimpleName());
+        Log.d("MAINACTIVITY", "OnClickListener");
         SparseArray<Number> tv_num_data = MainActivity.getInputViews().tv_num_data;
 
         /*
@@ -35,7 +38,7 @@ public class BtOnClickListener implements View.OnClickListener
         */
 
         EditText etTipPer = ((Activity)v.getContext()).findViewById(R.id.etTipPer);
-        MainActivity.getInputViews().parseTextView(etTipPer);
+        MainActivity.getInputViews().parseTextView(etTipPer, true);
 
         Log.d("MAINACTIVITY","BtOnClickListener: " + (v.getContext()).getResources().getResourceEntryName(v.getId()));
         int id = R.id.etTipPer;
@@ -61,12 +64,15 @@ public class BtOnClickListener implements View.OnClickListener
                 tv_num_data.put(v.getId(), val < 1 ? 1 : val);
                 break;
             default:
-                //tip%10 15 20 button.
-                //tv_num_data.put(R.id.etTipPer, tv_num_data.get(v.getId()));
         }
 
         // update data etTipPer or etSize for when bt >, <, 10%, 15%, 20%
         tv_num_data.put(id, tv_num_data.get(v.getId()).intValue());
+
+        Activity activity = (Activity)v.getContext();
+        final SharedPreferences.Editor dataSetter = activity.getSharedPreferences(activity.getClass().getSimpleName(), MODE_PRIVATE).edit();
+        dataSetter.putInt(Integer.toString(id), tv_num_data.get(v.getId()).intValue());
+        dataSetter.apply();
 
         //calculate tip total and bill total
         Calc.getInstance().calc(v);

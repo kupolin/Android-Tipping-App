@@ -49,12 +49,12 @@ class InputViews {
      */
     void parseTextView(TextView v, boolean onCreate)
     {
-     //   Log.d("MAIN_ACTIVITY", "PARSETEXTVIEW");
+         Log.d("MAIN_ACTIVITY", "PARSETEXTVIEW");
         //if text view is empty string do not reparse the view input.
         if (v.getText().toString().isEmpty() && !(v instanceof Switch))
             return;
 
-      //  Log.d("MAIN_ACTIVITY", "PARSETEXTVIEW + " + v.getContext().getResources().getResourceEntryName(v.getId()) + ": " + v.getText().toString());
+        Log.d("MAIN_ACTIVITY", "PARSETEXTVIEW + " + v.getContext().getResources().getResourceEntryName(v.getId()) + ": " + v.getText().toString());
         Activity activity = (Activity)v.getContext();
         final SharedPreferences.Editor dataSetter = activity.getSharedPreferences(activity.getClass().getSimpleName(), MODE_PRIVATE).edit();
         switch (v.getInputType())

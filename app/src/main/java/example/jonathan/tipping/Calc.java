@@ -11,7 +11,7 @@ import android.util.Log;
 import android.view.View;
 
 import static android.content.Context.MODE_PRIVATE;
-
+//TODO: change float to long.
 //controller that calculates the calctipNum, and calcTotal
 class Calc {
     private static final Calc ourInstance = new Calc();
@@ -97,8 +97,8 @@ class Calc {
         // persist data
         Activity activity = (Activity)v.getContext();
         final SharedPreferences.Editor dataSetter = activity.getSharedPreferences(activity.getClass().getSimpleName(), MODE_PRIVATE).edit();
-        dataSetter.putFloat(Float.toString(R.id.tvTipNum), (float)dTipNumResult);
-        dataSetter.putFloat(Float.toString(R.id.tvTotalNum), (float)dTotal);
+        dataSetter.putFloat(Integer.toString(R.id.tvTipNum), (float)dTipNumResult);
+        dataSetter.putFloat(Integer.toString(R.id.tvTotalNum), (float)dTotal);
         dataSetter.apply();
 
         // store in ram

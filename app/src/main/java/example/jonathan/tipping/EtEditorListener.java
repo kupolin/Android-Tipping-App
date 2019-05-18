@@ -29,11 +29,11 @@ public class EtEditorListener implements TextView.OnEditorActionListener
         {
             case EditorInfo.IME_ACTION_DONE:
                 Log.d("ACTIVITY_MAIN", "Action done");
-                MainActivity.getInputViews().parseTextView(v);
+                MainActivity.getInputViews().parseTextView(v, true);
                 Calc.getInstance().calc(v);
                 // find root of activity component tree.
                 ViewGroup root = ((Activity)v.getContext()).findViewById(R.id.main_view);
-                // update views
+                // update views this view + calculated views
                 MainActivity.getOutputViews().outputAllTextView(root);
                 break;
             default:
@@ -43,6 +43,7 @@ public class EtEditorListener implements TextView.OnEditorActionListener
         //cannot use HIDE_IMPLICIT_ONLY, because default keyboard service is opened.
         //i.e. numeric keyboard overlay over alpha keyboard.
         im.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        v.clearFocus();
         return true;
     }
 }

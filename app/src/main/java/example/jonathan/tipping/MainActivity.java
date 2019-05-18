@@ -31,7 +31,7 @@ or else previous activity name data will be stored under activity name.
 public class MainActivity extends AppCompatActivity
 {
     private static final boolean DEBUG = true;
-    private static final String ACTIVITY = "ACTIVITY_MAIN";
+    private static final String ACTIVITY = "MAIN_ACTIVITY";
 
     // not final for when system destroys this activity for memory.
     private static InputViews in = new InputViews();
@@ -64,16 +64,12 @@ if (restoredText != null) {
         Log.d(ACTIVITY, msg);
     }
 
+
+
     private void initData(ViewGroup root)
     {
         SharedPreferences dataGetter = getSharedPreferences(this.getClass().getSimpleName(), MODE_PRIVATE);
-/*
-        if(true)
-        {
-            set.clear();
-            return;
-        }
-*/
+
         //create a bfs
         Queue<ViewGroup> que = new ArrayDeque<>();
         que.add(root);
@@ -88,34 +84,38 @@ if (restoredText != null) {
                 else if(v.getChildAt(i) instanceof TextView)
                 {
                     int vId = v.getChildAt(i).getId();
-                    debugL(v.getContext().getResources().getResourceEntryName(vId));
+                    debugL("VID: *** : " + v.getContext().getResources().getResourceEntryName(vId));
+//                    debugL(v.getContext().getResources().getResourceEntryName(vId));
                     switch (((TextView)v.getChildAt(i)).getInputType())
                     {
                         //int #
                         case InputType.TYPE_CLASS_NUMBER:
-                            debugL("INITDATA " + "id: " + Integer.toString(vId) + "dataGetter: " + dataGetter.getInt(Integer.toString(vId),-1));
                             MainActivity.in.tv_num_data.put(vId, dataGetter.getInt(Integer.toString(vId), MainActivity.in.tv_num_data.get(vId).intValue()));
+                         //   MainActivity.in.tv_num_data.put(vId, dataGetter.getInt(Integer.toString(vId), -1));
                             break;
 
                         //decimal #
                         case InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER:
-                            debugL("INITDATA " + "id: " + Integer.toString(vId) + "dataGetter: " + dataGetter.getFloat(Integer.toString(vId),-1));
-                            MainActivity.in.tv_num_data.put(vId, dataGetter.getFloat(Integer.toString(vId),MainActivity.in.tv_num_data.get(vId).floatValue()));
+                            debugL("INITDATA " + "id: " + v.getContext().getResources().getResourceEntryName(vId) + "dataGetter: " + dataGetter.getFloat(Integer.toString(vId),-1));
+                            MainActivity.in.tv_num_data.put(vId, dataGetter.getFloat(Integer.toString(vId), MainActivity.in.tv_num_data.get(vId).floatValue()));
                             break;
 
                         // textview default type is string.
                         default:
                             //check dataGetter.getString instead of boolean.
-                            /*
                             if(v.getChildAt(i) instanceof Switch)
+                            {
                                 MainActivity.in.tv_bool_data.put(vId, dataGetter.getBoolean(Integer.toString(vId), MainActivity.in.tv_bool_data.get(vId)));
-                            */
+                                Log.d("MAIN_ACTIVITY","!!!");
+                                ((Switch)v.getChildAt(i)).setChecked(MainActivity.in.tv_bool_data.get(vId));
+                            }
                            // MainActivity.in.tv_str_data.put(vId, dataGetter.getString(Integer.toString(v.getId()),""));
                     }
                 }
             }
         }
     }
+
     /*
         Initialize all ui elements / construct listeners.
     */
@@ -221,7 +221,6 @@ if (restoredText != null) {
 
         // root component view
         ViewGroup root = findViewById(R.id.main_view);
-        Log.d("ACTIVITY_MAIN", "222");
         // initialize all text views and puts them in a model.
         in.parseAllTextViews(root, false);
         // load persistent data after view load.

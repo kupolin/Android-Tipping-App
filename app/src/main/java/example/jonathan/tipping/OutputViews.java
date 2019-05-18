@@ -25,36 +25,26 @@ class OutputViews {
     void  outputTextView(TextView v)
     {
         String out;
-        // setting up persistent data loader;
-        Activity activity = (Activity)v.getContext();
-        final SharedPreferences.Editor dataSetter = activity.getSharedPreferences(activity.getClass().getSimpleName(), MODE_PRIVATE).edit();
 
         SparseArray<Number> in = MainActivity.getInputViews().tv_num_data;
         switch (v.getInputType())
         {
             //int #
             case InputType.TYPE_CLASS_NUMBER:
-
-                dataSetter.putInt(Integer.toString(v.getId()),  in.get(v.getId()).intValue());
                 out = in.get(v.getId()).toString();
                 break;
 
             //decimal #
 
             case InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER:
-
-              //  Log.d("MAINACTIVITY", "view : " + String.format("{0:00}", out));
-                dataSetter.putFloat(Integer.toString(v.getId()),  in.get(v.getId()).floatValue());
                 out = String.format(new Locale("en"), "%.2f", in.get(v.getId()).doubleValue());
                 break;
 
             // textview default type is string.
             default:
-                dataSetter.putString(Integer.toString(v.getId()), MainActivity.getInputViews().tv_str_data.get(v.getId()));
                 out = MainActivity.getInputViews().tv_str_data.get(v.getId());
         }
 
-        dataSetter.apply();
         v.setText(out);
 
         if(v instanceof EditText)
