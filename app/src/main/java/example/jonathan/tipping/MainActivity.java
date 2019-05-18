@@ -96,8 +96,10 @@ if (restoredText != null) {
 
                         //decimal #
                         case InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER:
-                            debugL("INITDATA " + "id: " + v.getContext().getResources().getResourceEntryName(vId) + "dataGetter: " + dataGetter.getFloat(Integer.toString(vId),-1));
-                            MainActivity.in.tv_num_data.put(vId, dataGetter.getFloat(Integer.toString(vId), MainActivity.in.tv_num_data.get(vId).floatValue()));
+                            debugL("INITDATA " + "id: " + v.getContext().getResources().getResourceEntryName(vId) + "dataGetter: " + Double.longBitsToDouble(dataGetter.getLong(Integer.toString(vId),-1)));
+
+                            MainActivity.in.tv_num_data.put(vId, Double.longBitsToDouble(dataGetter.getLong(Integer.toString(vId),
+                                                                                         Double.doubleToLongBits(MainActivity.in.tv_num_data.get(vId).doubleValue()))));
                             break;
 
                         // textview default type is string.

@@ -21,7 +21,7 @@
     <string name="billNum">100.00</string>
     <string name="tipNum">0.00</string>
     <string name="tvTotal">"0.00</string>
-    <string name="tipPerNum">15.00</string>
-    <string name="sizeNum">3</string>
+    <string name="tipPerNum">0.00</string>
+    <string name="sizeNum">1</string>
 
 </resources>
