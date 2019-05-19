@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity
     private static InputViews in = new InputViews();
     private static OutputViews out = new OutputViews();
 
+    final static String swText = "swText";
+    final static String swBool = "swBool";
     /*
     SETTER
     // MY_PREFS_NAME - a static String variable like:
@@ -107,8 +109,9 @@ if (restoredText != null) {
                             //check dataGetter.getString instead of boolean.
                             if(v.getChildAt(i) instanceof Switch)
                             {
-                                MainActivity.in.tv_bool_data.put(vId, dataGetter.getBoolean(Integer.toString(vId), MainActivity.in.tv_bool_data.get(vId)));
-                                Log.d("MAIN_ACTIVITY","!!!");
+                                MainActivity.in.tv_bool_data.put(vId, dataGetter.getBoolean(vId + MainActivity.swBool, MainActivity.in.tv_bool_data.get(vId)));
+                                MainActivity.in.tv_str_data.put(vId, dataGetter.getString(vId + MainActivity.swText, MainActivity.in.tv_str_data.get(vId)));
+                                //only need to set on first load. default will work when not load.
                                 ((Switch)v.getChildAt(i)).setChecked(MainActivity.in.tv_bool_data.get(vId));
                             }
                            // MainActivity.in.tv_str_data.put(vId, dataGetter.getString(Integer.toString(v.getId()),""));

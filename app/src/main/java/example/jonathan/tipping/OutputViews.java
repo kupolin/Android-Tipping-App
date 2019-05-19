@@ -23,6 +23,7 @@ class OutputViews {
 
     // output single view
     // if current view is empty string take care of it.
+    // need boolean so it doesn't restore the same thing on onCreate.
     void  outputTextView(TextView v)
     {
         String out;
@@ -50,13 +51,12 @@ class OutputViews {
             default:
                 if(v instanceof Switch)
                 {
-                    // Each Switch text string will not be saved.
-                    // Can only choose between text field or on/off to store
-                    // TODO: Fix: store by v.getId() + "toggle" and v.getId() + "text"
-                    dataSetter.putBoolean(Integer.toString(v.getId()), ((Switch) v).isChecked());
+                    //each unique id can only store one data type.
+                    dataSetter.putBoolean(v.getId() + MainActivity.swBool, MainActivity.getInputViews().tv_bool_data.get(v.getId()));
+                    dataSetter.putString(v.getId() + MainActivity.swText, MainActivity.getInputViews().tv_str_data.get(v.getId()));
                 }
                 else
-                    dataSetter.putString(Integer.toString(v.getId()), v.getText().toString());
+                    dataSetter.putString(Integer.toString(v.getId()), MainActivity.getInputViews().tv_str_data.get(v.getId()));
                 out = MainActivity.getInputViews().tv_str_data.get(v.getId());
         }
         dataSetter.apply();
