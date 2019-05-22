@@ -34,12 +34,8 @@ import java.util.Queue;
 If refactor any activity name, make sure to clear the SharedPreference with SharedPreference.clear()
 or else previous activity name data will be stored under activity name.
  */
-// TODO: change in out to stack variables.
-// TODO: minimize static variables. Static fields are only used if you want persistent variables used across full runtime among ALL activities.
-// TODO: IF static variable is associated to ACTIVITY life cycle, then MAKE IT LOCAL.
-// TODO: when activity calls onDestroy(): class loaders are NOT unloaded. Thus, static data is NOT collected.
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
 {
     private static final boolean DEBUG = true;
     private static final String ACTIVITY = "MAIN_ACTIVITY";
@@ -58,8 +54,6 @@ public class MainActivity extends AppCompatActivity
     {
         Log.d(ACTIVITY, msg);
     }
-
-
 
     private void initData(ViewGroup root)
     {
@@ -256,42 +250,33 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        Log.d("MAIN_ACTIVITY", "onCreateOptionsMenu");
-        ActionBar ab = getSupportActionBar();
-        ab.setDisplayHomeAsUpEnabled(true);
-        ab.setHomeAsUpIndicator(R.drawable.ic_settings_applications_2x);
-
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu)
-    {
-        Log.d("MAIN_ACTIVITY", "onPrepareOptionsMenu");
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         switch(item.getItemId())
         {
             case android.R.id.home:
-//                Intent i = new Intent(MainActivity.this, SecondActivity.class);
-                //startActvity(i);
+                Intent i = new Intent(MainActivity.this, SettingActivity.class);
+                startActivity(i);
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
     // This callback is called only when there is a saved instance that is previously saved by using
     // onSaveInstanceState(). We restore some state in onCreate(), while we can optionally restore
     // other state here, possibly usable after onStart() has completed.
     // The savedInstanceState Bundle is same as the one used in onCreate().
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        Log.d("MAIN_ACTIVITY_BASE", "onCreateOptionsMenu");
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setHomeAsUpIndicator(R.drawable.ic_settings_applications_2x);
+
+        return super.onCreateOptionsMenu(menu);
+    }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
