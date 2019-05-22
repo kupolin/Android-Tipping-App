@@ -6,14 +6,25 @@ package example.jonathan.tipping;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+
 import android.util.Log;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Switch;
+import android.widget.TextView;
+
 import java.lang.String;
 import java.util.ArrayDeque;
 import java.util.Locale;
@@ -39,24 +50,6 @@ public class MainActivity extends AppCompatActivity
 
     final static String swText = "swText";
     final static String swBool = "swBool";
-    /*
-    SETTER
-    // MY_PREFS_NAME - a static String variable like:
-//public static final String MY_PREFS_NAME = "MyPrefsFile";
-SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
- editor.putString("name", "Elena");
- editor.putInt("idName", 12);
- editor.apply();
-     */
-/*
-GETTER
-SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-String restoredText = prefs.getString("text", null);
-if (restoredText != null) {
-  String name = prefs.getString("name", "No name defined");//"No name defined" is the default value.
-  int idName = prefs.getInt("idName", 0); //0 is the default value.
-}
- */
 
     public static InputViews getInputViews() {return in;}
     public static OutputViews getOutputViews(){return out;}
@@ -83,9 +76,11 @@ if (restoredText != null) {
             {
                 if (v.getChildAt(i) instanceof ViewGroup)
                     que.add((ViewGroup) root.getChildAt(i));
-                else if(v.getChildAt(i) instanceof TextView)
+                else if(v.getChildAt(i) instanceof TextView && !(v.getChildAt(i) instanceof Toolbar))
                 {
                     int vId = v.getChildAt(i).getId();
+                    debugL(v.getChildAt(i).getClass().toString());
+                    debugL(((TextView)v.getChildAt(i)).getText().toString());
                     debugL("VID: *** : " + v.getContext().getResources().getResourceEntryName(vId));
 //                    debugL(v.getContext().getResources().getResourceEntryName(vId));
                     switch (((TextView)v.getChildAt(i)).getInputType())
@@ -98,7 +93,8 @@ if (restoredText != null) {
 
                         //decimal #
                         case InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER:
-                            debugL("INITDATA " + "id: " + v.getContext().getResources().getResourceEntryName(vId) + "dataGetter: " + Double.longBitsToDouble(dataGetter.getLong(Integer.toString(vId),-1)));
+                            debugL("INITDATA " + "id: " + v.getContext().getResources().getResourceEntryName(vId) );
+                            debugL("dataGetter: " + Double.longBitsToDouble(dataGetter.getLong(Integer.toString(vId),-1)));
 
                             MainActivity.in.tv_num_data.put(vId, Double.longBitsToDouble(dataGetter.getLong(Integer.toString(vId),
                                                                                          Double.doubleToLongBits(MainActivity.in.tv_num_data.get(vId).doubleValue()))));
@@ -211,14 +207,15 @@ if (restoredText != null) {
     public void onCreate(Bundle savedInstanceState) {
         if(DEBUG)
             Log.d(ACTIVITY, "OnCreate");
-
+        // store into ram/savedInstanceState for performance when it matters i.e. huge data set.
         super.onCreate(savedInstanceState);
         Log.d("ACTIVITY_MAIN", "209");
+
         // dataLoader(savedInstanceState);
 
         // set the user interface layout for this activity
-        // the layout file is defined in the project res/layout/main_activity.xml file
         setContentView(R.layout.activity_main);
+
         if(MainActivity.in == null)
             MainActivity.in = new InputViews();
         if(MainActivity.out == null)
@@ -238,12 +235,57 @@ if (restoredText != null) {
              in.parseAllTextViews(root);
          */
 
-        //Calc.getInstance().calc(v);
-
         Log.d("ACTIVITY_MAIN", "236");
         out.outputAllTextView(root);
         Log.d("ACTIVITY_MAIN", "238");
         initListeners();
+
+        /*
+        Setting up a custom toolbar:
+        create a toolbar. actionbar.setTitle("") to get rid of default app title.
+        create a TextView inside the toolbar as placement for a title.
+        Left of TextView, create image views to support left icon buttons.
+
+        right icon buttons can still be loaded with the standard menu.
+         */
+
+        // setup menu
+        // Since custom toolbar is not used, and main activity is the only one that needs a left icon,
+        // home button hack will be used to simulate a button click left icon.
+        setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        Log.d("MAIN_ACTIVITY", "onCreateOptionsMenu");
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+        ab.setHomeAsUpIndicator(R.drawable.ic_settings_applications_2x);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        Log.d("MAIN_ACTIVITY", "onPrepareOptionsMenu");
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case android.R.id.home:
+//                Intent i = new Intent(MainActivity.this, SecondActivity.class);
+                //startActvity(i);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     // This callback is called only when there is a saved instance that is previously saved by using
