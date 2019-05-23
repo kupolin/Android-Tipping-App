@@ -8,6 +8,7 @@ package example.jonathan.tipping;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -40,6 +41,7 @@ public class MainActivity extends BaseActivity
     private static final boolean DEBUG = true;
     private static final String ACTIVITY = "MAIN_ACTIVITY";
 
+    //TODO: for each static variable used, losing 4 bytes of space of reference.
     // not final for when system destroys this activity for memory.
     private static InputViews in = new InputViews();
     private static OutputViews out = new OutputViews();
@@ -50,6 +52,7 @@ public class MainActivity extends BaseActivity
     public static InputViews getInputViews() {return in;}
     public static OutputViews getOutputViews(){return out;}
 
+    private final int SETTING_REQ_CODE = 0;
     public static void debugL(String msg)
     {
         Log.d(ACTIVITY, msg);
@@ -73,10 +76,10 @@ public class MainActivity extends BaseActivity
                 else if(v.getChildAt(i) instanceof TextView && !(v.getChildAt(i) instanceof Toolbar))
                 {
                     int vId = v.getChildAt(i).getId();
-                    debugL(v.getChildAt(i).getClass().toString());
-                    debugL(((TextView)v.getChildAt(i)).getText().toString());
-                    debugL("VID: *** : " + v.getContext().getResources().getResourceEntryName(vId));
-//                    debugL(v.getContext().getResources().getResourceEntryName(vId));
+              //      debugL(v.getChildAt(i).getClass().toString());
+              //      debugL(((TextView)v.getChildAt(i)).getText().toString());
+               //     debugL("VID: *** : " + v.getContext().getResources().getResourceEntryName(vId));
+
                     switch (((TextView)v.getChildAt(i)).getInputType())
                     {
                         //int #
@@ -250,24 +253,6 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch(item.getItemId())
-        {
-            case android.R.id.home:
-                Intent i = new Intent(MainActivity.this, SettingActivity.class);
-                startActivity(i);
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-    // This callback is called only when there is a saved instance that is previously saved by using
-    // onSaveInstanceState(). We restore some state in onCreate(), while we can optionally restore
-    // other state here, possibly usable after onStart() has completed.
-    // The savedInstanceState Bundle is same as the one used in onCreate().
-    @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         Log.d("MAIN_ACTIVITY_BASE", "onCreateOptionsMenu");
@@ -278,6 +263,38 @@ public class MainActivity extends BaseActivity
         return super.onCreateOptionsMenu(menu);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case android.R.id.home:
+                Intent i = new Intent(MainActivity.this, SettingActivity.class);
+                startActivityForResult(i, SETTING_REQ_CODE);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+    {
+        debugL("onActivityResult");
+        debugL("requestCode: " + requestCode + " | resultCode: " + resultCode);
+        int x = data.getIntExtra("test", -8);
+        debugL("strign: " + data.getStringExtra("one"));
+        debugL("int: " + data.getIntExtra("one", -1919));
+
+        debugL("testing: " + x);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    // This callback is called only when there is a saved instance that is previously saved by using
+    // onSaveInstanceState(). We restore some state in onCreate(), while we can optionally restore
+    // other state here, possibly usable after onStart() has completed.
+    // The savedInstanceState Bundle is same as the one used in onCreate().
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         if(DEBUG)
@@ -291,8 +308,7 @@ public class MainActivity extends BaseActivity
         if(DEBUG)
             Log.d(ACTIVITY, "onSaveInstanceState");
         // outState.putString(GAME_STATE_KEY, gameState);
-      //  outState.putString(TE_BILL_KEY, teBill.getText().toString());
-
+        //  outState.putString(TE_BILL_KEY, teBill.getText().toString());
         // call superclass to save any view hierarchy
         super.onSaveInstanceState(outState);
     }

@@ -35,24 +35,25 @@
         app:layout_constraintTop_toBottomOf="@id/setting_tvTip">
 
         <ImageButton
-            android:id="@+id/setting_bt3"
+            android:id="@+id/setting_btTipEnd"
+            android:clickable="false"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_gravity="right"
-            android:inputType="number" />
+            android:layout_gravity="end" />
 
         <ImageButton
-            android:id="@+id/setting_btTip2"
+            android:id="@+id/setting_btTipCenter"
+            android:clickable="false"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:inputType="number" />
+            android:layout_gravity="center" />
 
         <ImageButton
-            android:id="@+id/setting_btTip1"
+            android:id="@+id/setting_btTipStart"
+            android:clickable="false"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_gravity="left" />
+            android:layout_gravity="start" />
 
         <EditText
             android:id="@+id/setting_etStartTip"
@@ -62,7 +63,9 @@
             android:gravity="center"
             android:inputType="number"
             android:maxLength="4"
-            android:text="@string/ten" />
+            android:text="@string/ten"
+            android:imeOptions="actionDone"
+            />
 
         <EditText
             android:id="@+id/setting_etCenterTip"
@@ -72,7 +75,9 @@
             android:gravity="center"
             android:inputType="number"
             android:maxLength="4"
-            android:text="@string/fifteen" />
+            android:text="@string/fifteen"
+            android:imeOptions="actionDone"
+            />
 
         <EditText
             android:id="@+id/setting_etEndTip"
@@ -82,7 +87,9 @@
             android:gravity="center"
             android:inputType="number"
             android:maxLength="4"
-            android:text="@string/twenty" />
+            android:text="@string/twenty"
+            android:imeOptions="actionDone"
+            />
     </FrameLayout>
 
     <android.support.v7.widget.Toolbar
@@ -134,8 +141,9 @@
         android:layout_width="59dp"
         android:layout_height="48dp"
         android:gravity="center"
-        android:inputType="textPersonName"
+        android:inputType="number"
         android:text="@string/sizeNum"
+        android:imeOptions="actionDone"
         app:layout_constraintStart_toEndOf="@+id/setting_btLt"
         app:layout_constraintTop_toBottomOf="@+id/setting_tvSize" />
 

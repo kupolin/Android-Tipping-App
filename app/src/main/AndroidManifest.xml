@@ -22,7 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
+b
         <activity android:name=".SettingActivity"
             android:label="Settings"
             android:parentActivityName=".MainActivity">

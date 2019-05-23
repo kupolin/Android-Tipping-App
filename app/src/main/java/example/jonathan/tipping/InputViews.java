@@ -52,7 +52,7 @@ class InputViews {
         if (v.getText().toString().isEmpty() && !(v instanceof Switch))
             return;
 
-        Log.d("MAIN_ACTIVITY", "PARSETEXTVIEW + " + v.getContext().getResources().getResourceEntryName(v.getId()) + ": " + v.getText().toString());
+ //       Log.d("MAIN_ACTIVITY", "INPUTPARSETEXTVIEW + " + v.getContext().getResources().getResourceEntryName(v.getId()) + ": " + v.getText().toString());
 
         switch (v.getInputType())
         {
