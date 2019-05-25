@@ -34,7 +34,7 @@ public class SwOnCheckedChangedListener implements CompoundButton.OnCheckedChang
             MainActivity.getInputViews().parseTextView(
                             (TextView)((Activity)buttonView.getContext()).findViewById(R.id.etSize));
 //how to know which activity is accessing the information.
-        Calc.getInstance().calc(buttonView);
+        Calc.getInstance().calc();
         //output
         ViewGroup root = ((Activity)buttonView.getContext()).findViewById(R.id.main_view);
         MainActivity.getOutputViews().outputAllTextView(root);

@@ -58,7 +58,7 @@ class Calc {
         return bill + tip;
     }
 
-    void calc (View v)
+    void calc ()
     {
         InputViews in = MainActivity.getInputViews();
         //switch case for tip per person.
@@ -93,7 +93,6 @@ class Calc {
         //Total Bill per person if switch is off.
         if(!in.tv_bool_data.get(R.id.swSize))
             dTotal /= size_int;
-
 
         // store in ram
         in.tv_num_data.put(R.id.tvTipNum, dTipNumResult);

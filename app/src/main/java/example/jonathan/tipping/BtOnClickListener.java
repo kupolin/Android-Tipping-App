@@ -75,7 +75,7 @@ public class BtOnClickListener implements View.OnClickListener
         dataSetter.apply();
 
         //calculate tip total and bill total
-        Calc.getInstance().calc(v);
+        Calc.getInstance().calc();
 
         // output
         ViewGroup root = ((Activity)v.getContext()).findViewById(R.id.main_view);

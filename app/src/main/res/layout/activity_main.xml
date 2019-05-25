@@ -56,7 +56,8 @@
         android:imeOptions="actionDone"
         android:inputType="number"
         android:singleLine="true"
-        android:text="@string/sizeNum"
+        android:text="@integer/sizeNum"
+        android:maxLength="@integer/max_length"
         app:layout_constraintEnd_toStartOf="@id/btSizeGt"
         app:layout_constraintTop_toBottomOf="@id/etTipPer" />
 
@@ -149,7 +150,7 @@
         android:layout_marginEnd="40dp"
         android:layout_marginRight="40dp"
         android:inputType="number"
-        android:text="@string/fifteen"
+        android:text="@integer/fifteen"
         app:layout_constraintEnd_toStartOf="@id/btTip3"
         app:layout_constraintTop_toBottomOf="@id/teBill" />
 
@@ -163,7 +164,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:inputType="number"
-        android:text="@string/ten"
+        android:text="@integer/ten"
         app:layout_constraintEnd_toStartOf="@id/btTip2"
         app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toStartOf="parent"
@@ -178,7 +179,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:layout_marginRight="32dp"
-        android:text="@string/twenty"
+        android:text="@integer/twenty"
         android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/teBill"
@@ -205,7 +206,8 @@
         android:layout_marginRight="8dp"
         android:ems="10"
         android:inputType="number"
-        android:text="@string/ten"
+        android:text="@integer/ten"
+        android:maxLength="@integer/max_length"
         android:imeOptions="actionDone"
         app:layout_constraintRight_toLeftOf="@id/btTipGt"
         app:layout_constraintTop_toBottomOf="@id/btTip3" />

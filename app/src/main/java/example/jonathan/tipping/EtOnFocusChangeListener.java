@@ -26,7 +26,7 @@ public class EtOnFocusChangeListener implements View.OnFocusChangeListener
         else
         {
             MainActivity.getInputViews().parseTextView((TextView) v);
-            Calc.getInstance().calc(v);
+            Calc.getInstance().calc();
 
             // activity root component tree
             ViewGroup root = ((Activity)v.getContext()).findViewById(R.id.main_view);

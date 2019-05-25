@@ -56,38 +56,38 @@
             android:layout_gravity="start" />
 
         <EditText
-            android:id="@+id/setting_etStartTip"
+            android:id="@+id/setting_etTip1"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|start"
             android:gravity="center"
             android:inputType="number"
-            android:maxLength="4"
-            android:text="@string/ten"
+            android:maxLength="@integer/max_length"
+            android:text="@integer/ten"
             android:imeOptions="actionDone"
             />
 
         <EditText
-            android:id="@+id/setting_etCenterTip"
+            android:id="@+id/setting_etTip2"
             android:layout_width="106dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
             android:inputType="number"
-            android:maxLength="4"
-            android:text="@string/fifteen"
+            android:maxLength="@integer/max_length"
+            android:text="@integer/fifteen"
             android:imeOptions="actionDone"
             />
 
         <EditText
-            android:id="@+id/setting_etEndTip"
+            android:id="@+id/setting_etTip3"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|end"
             android:gravity="center"
             android:inputType="number"
-            android:maxLength="4"
-            android:text="@string/twenty"
+            android:maxLength="@integer/max_length"
+            android:text="@integer/twenty"
             android:imeOptions="actionDone"
             />
     </FrameLayout>
@@ -142,7 +142,8 @@
         android:layout_height="48dp"
         android:gravity="center"
         android:inputType="number"
-        android:text="@string/sizeNum"
+        android:text="@integer/sizeNum"
+        android:maxLength="@integer/max_length"
         android:imeOptions="actionDone"
         app:layout_constraintStart_toEndOf="@+id/setting_btLt"
         app:layout_constraintTop_toBottomOf="@+id/setting_tvSize" />

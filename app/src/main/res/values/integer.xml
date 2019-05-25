@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item type= "integer" name="max_length">4</item>
+    <!-- tip % -->
+    <item type= "integer" name="ten">10</item>
+    <item type= "integer" name="fifteen">15</item>
+    <item type= "integer" name="twenty">20</item>
+
+    <item type= "integer" name="sizeNum">1</item>
+</resources>

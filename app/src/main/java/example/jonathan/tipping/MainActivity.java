@@ -8,6 +8,7 @@ package example.jonathan.tipping;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -27,21 +28,18 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import java.lang.String;
+import java.nio.charset.MalformedInputException;
 import java.util.ArrayDeque;
 import java.util.Locale;
 import java.util.Queue;
-
-/*
-If refactor any activity name, make sure to clear the SharedPreference with SharedPreference.clear()
-or else previous activity name data will be stored under activity name.
- */
-
+// TODO: MAJOR TODO, when edit text BUT BACK BUTTON IS PUSHED. NEED TO FIX THE BUG. IT WON EVEN STORE. GOD I SUCK.
 public class MainActivity extends BaseActivity
 {
     private static final boolean DEBUG = true;
     private static final String ACTIVITY = "MAIN_ACTIVITY";
 
     //TODO: for each static variable used, losing 4 bytes of space of reference.
+    // 4 bytes space of reference is NOTHING compare to the amount of bytes generated from the R static file.
     // not final for when system destroys this activity for memory.
     private static InputViews in = new InputViews();
     private static OutputViews out = new OutputViews();
@@ -50,9 +48,9 @@ public class MainActivity extends BaseActivity
     final static String swBool = "swBool";
 
     public static InputViews getInputViews() {return in;}
-    public static OutputViews getOutputViews(){return out;}
-
     private final int SETTING_REQ_CODE = 0;
+
+    public static OutputViews getOutputViews(){return out;}
     public static void debugL(String msg)
     {
         Log.d(ACTIVITY, msg);
@@ -224,6 +222,7 @@ public class MainActivity extends BaseActivity
         in.parseAllTextViews(root);
         // load persistent data after view load.
         initData(root);
+        Calc.getInstance().calc();
         //TODO: load from saved instance
         /*
                 if(savedInstanceState != null)
@@ -263,13 +262,20 @@ public class MainActivity extends BaseActivity
         return super.onCreateOptionsMenu(menu);
     }
 
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         switch(item.getItemId())
         {
+            // bundle size num.
             case android.R.id.home:
                 Intent i = new Intent(MainActivity.this, SettingActivity.class);
+                i.putExtra(Integer.toString(R.id.btTip1), ((TextView)findViewById(R.id.btTip1)).getText());
+                i.putExtra(Integer.toString(R.id.btTip2), ((TextView)findViewById(R.id.btTip2)).getText());
+                i.putExtra(Integer.toString(R.id.btTip3), ((TextView)findViewById(R.id.btTip3)).getText());
+                i.putExtra(Integer.toString(R.id.etSize), ((TextView)findViewById(R.id.etSize)).getText());
                 startActivityForResult(i, SETTING_REQ_CODE);
                 return true;
 
@@ -279,16 +285,69 @@ public class MainActivity extends BaseActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
-    {
-        debugL("onActivityResult");
-        debugL("requestCode: " + requestCode + " | resultCode: " + resultCode);
-        int x = data.getIntExtra("test", -8);
-        debugL("strign: " + data.getStringExtra("one"));
-        debugL("int: " + data.getIntExtra("one", -1919));
+            protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data)
+            {
+                super.onActivityResult(requestCode, resultCode, data);
+                if (data == null)
+                    return;
+                //-1
+                MainActivity.debugL("onActivityResult resultCode " + resultCode);
+                // for future more req_code i.e. using fragments or going back to this activity from another.
+                switch (requestCode)
+                {
+                    case SETTING_REQ_CODE:
+                        if(resultCode == RESULT_OK)
+                        {
+                            in.tv_num_data.put(R.id.btTip1,
+                              data.getIntExtra(Integer.toString(R.id.btTip1),
+                                in.tv_num_data.get(R.id.btTip1).intValue()));
+                            in.tv_num_data.put(R.id.btTip2,
+                              data.getIntExtra(Integer.toString(R.id.btTip2),
+                                in.tv_num_data.get(R.id.btTip2).intValue()));
 
-        debugL("testing: " + x);
-        super.onActivityResult(requestCode, resultCode, data);
+                            in.tv_num_data.put(R.id.btTip3,
+                              data.getIntExtra(Integer.toString(R.id.btTip3),
+                                in.tv_num_data.get(R.id.btTip3).intValue()));
+
+                            in.tv_num_data.put(R.id.etSize,
+                              data.getIntExtra(Integer.toString(R.id.etSize),
+                                in.tv_num_data.get(R.id.etSize).intValue()));
+                        }
+
+                        Calc.getInstance().calc();
+                        out.outputAllTextView((ViewGroup)findViewById(R.id.main_view));
+                        break;
+                    default:
+        }
+    }
+
+    // Case when back button is pressed when edit text have changed a value inside. Need to store to Share Preference.
+    @Override
+    public void onBackPressed()
+    {
+        //get current focusable.
+        super.onBackPressed();
+
+        // only if view is edit text will it changed. shouldn't ever be the case if getCurrentFocus is != null.
+        // in case of new feature for robustness like a new widget that can be focusable.
+        if (!(getCurrentFocus() instanceof EditText))
+            return;
+
+        EditText et = (EditText)getCurrentFocus();
+        SharedPreferences.Editor pref = getSharedPreferences(getClass().getSimpleName(), MODE_PRIVATE).edit();
+        //can only be two types. number or TYPE_NUMBER_FLAG_DECIMAL
+
+        if(et.getInputType() == InputType.TYPE_CLASS_NUMBER)
+        {
+            MainActivity.debugL("NUMBER");
+            pref.putInt(Integer.toString(et.getId()), Integer.parseInt(et.getText().toString()));
+        }
+        else
+        {
+            MainActivity.debugL("DOUBLE");
+            pref.putLong(Integer.toString(et.getId()), Double.doubleToLongBits(Double.parseDouble(et.getText().toString())));
+        }
+        pref.apply();
     }
 
     // This callback is called only when there is a saved instance that is previously saved by using

@@ -39,6 +39,7 @@ class OutputViews {
             case InputType.TYPE_CLASS_NUMBER:
                 dataSetter.putInt(Integer.toString(v.getId()),in.get(v.getId()).intValue());
                 out = in.get(v.getId()).toString();
+                MainActivity.debugL(v.getContext().getResources().getResourceEntryName(v.getId()) + " : " + out);
                 break;
 
             //decimal #
@@ -62,6 +63,7 @@ class OutputViews {
         dataSetter.apply();
         v.setText(out);
 
+        // put cursor at end of text in edit text
         if(v instanceof EditText)
             ((EditText)v).setSelection(out.length());
 
