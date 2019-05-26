@@ -18,4 +18,10 @@
     <string name="tipNum">10.00</string>
     <string name="tvTotal">"110.00</string>
     <string name="tipPerNum">0.00</string>
+
+    <!-- menu item names -->
+    <string name="share"> Share </string>
+
+    <!-- share menu title -->
+    <string name="send_intent_title">Send a message via:</string>
 </resources>

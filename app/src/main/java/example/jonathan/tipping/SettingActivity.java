@@ -1,9 +1,15 @@
+/*
+    @Author: Jonathan Lin (jonathan.lin108@gmail.com)
+*/
+
 package example.jonathan.tipping;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -17,9 +23,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 
-/*
-TODO: always read super implementation!!!!! or prepare to debug 21093802913219328109 hours;
- */
+//TODO: pre 0000. regex: ^0+?!$, ""
 public class SettingActivity extends BaseActivity
 {
   private final Intent inRes = new Intent();
@@ -46,13 +50,14 @@ public class SettingActivity extends BaseActivity
   private class EtFocusChangeListener implements View.OnFocusChangeListener
   {
     private CharSequence tempStr;
+
     //when changing focus, hasFocus is False, the currentView is clearFocus().
     @Override
     public void onFocusChange(View v, boolean hasFocus)
     {
       MainActivity.debugL("TESTING : " + hasFocus);
-      TextView tv = (TextView)v;
-      if(hasFocus)
+      TextView tv = (TextView) v;
+      if (hasFocus)
       {
         tempStr = tv.getText();
         tv.setText("");
@@ -60,7 +65,7 @@ public class SettingActivity extends BaseActivity
       }
 
       MainActivity.debugL("HELLO");
-      if("".contentEquals(tv.getText()))
+      if ("".contentEquals(tv.getText()))
         tv.setText(this.tempStr);
       saveData((TextView) v);
     }
@@ -90,18 +95,18 @@ public class SettingActivity extends BaseActivity
 
         EditText size = findViewById(R.id.setting_etSize);
         int sizeNum = "".contentEquals(etSize.getText())
-                      ? 2
-                      : Integer.parseInt(etSize.getText().toString());
-        switch(v.getId())
+          ? 2
+          : Integer.parseInt(etSize.getText().toString());
+        switch (v.getId())
         {
           case R.id.setting_btGt:
             int maxNum = 0;
 
             // if Value is max_length 4. maxNum is 9999
-            for(int i = 0; i < getResources().getInteger(R.integer.max_length); i++)
+            for (int i = 0; i < getResources().getInteger(R.integer.max_length); i++)
               maxNum = maxNum * 10 + 9;
 
-            if(sizeNum < maxNum)
+            if (sizeNum < maxNum)
             {
               etSize.setText(String.valueOf(++sizeNum));
               saveData(etSize);
@@ -110,7 +115,7 @@ public class SettingActivity extends BaseActivity
             break;
 
           case R.id.setting_btLt:
-            if(sizeNum > 1)
+            if (sizeNum > 1)
             {
               etSize.setText(String.valueOf(--sizeNum));
               saveData(etSize);
@@ -142,7 +147,7 @@ public class SettingActivity extends BaseActivity
     }
 
     // if instrumentation class in internal attach method EVER becomes null for some reason.
-    if(getIntent() != null)
+    if (getIntent() != null)
     {
       etTip1.setText(getIntent().getCharSequenceExtra(Integer.toString(R.id.btTip1)));
       etTip2.setText(getIntent().getCharSequenceExtra(Integer.toString(R.id.btTip2)));
@@ -177,7 +182,7 @@ public class SettingActivity extends BaseActivity
     //set default reset button
     btReset.setOnClickListener(new BtClickListener());
 
-    setSupportActionBar((Toolbar)findViewById(R.id.setting_toolbar));
+    setSupportActionBar((Toolbar) findViewById(R.id.setting_toolbar));
   }
 
   @Override
@@ -202,7 +207,7 @@ public class SettingActivity extends BaseActivity
     int out = Integer.parseInt(v.getText().toString());
 
     SharedPreferences.Editor pref = getSharedPreferences(MainActivity.class.getSimpleName(), MODE_PRIVATE).edit();
-    switch(v.getId())
+    switch (v.getId())
     {
       case R.id.setting_etTip1:
         this.inRes.putExtra(Integer.toString(R.id.btTip1), out);
@@ -238,16 +243,16 @@ public class SettingActivity extends BaseActivity
   //  onFocusChange: when false need to store. // onFocusChange reminds me of fork. :(
 
   // when onFocusChange second call (false) is not called:
-    //cases:
-    // menu back press
-    // hardware back button
+  //cases:
+  // menu back press
+  // hardware back button
   @Override
   public boolean onOptionsItemSelected(MenuItem item)
   {
-    switch(item.getItemId())
+    switch (item.getItemId())
     {
       case android.R.id.home:
-        if(getCurrentFocus() instanceof EditText)
+        if (getCurrentFocus() instanceof EditText)
           getCurrentFocus().clearFocus();
         finish();
         return true;
@@ -256,6 +261,16 @@ public class SettingActivity extends BaseActivity
     }
   }
 
+  public static void checkThread()
+  {
+    Thread t = Thread.currentThread();
+
+    long l = t.getId();
+    String name = t.getName();
+    long p = t.getPriority();
+    String gname = t.getThreadGroup().getName();
+    MainActivity.debugL(name + ":(id)" + l + ":(priority)" + p + ":(group)" + gname);
+  }
   @Override
   public void onDestroy()
   {
@@ -264,16 +279,15 @@ public class SettingActivity extends BaseActivity
   }
 
   /*
-  super.onBackPressed() CALLS FINISH!!!!!
+  super.onBackPressed() calls finish. read source code. intent data processing from synchronize this i believe.
    */
   @Override
   public void onBackPressed()
   {
+    MainActivity.debugL("onBackPressed");
     if (getCurrentFocus() instanceof EditText)
-    {
-      MainActivity.debugL("BACK PRESS " + RESULT_CANCELED);
       getCurrentFocus().clearFocus();
-    }
     super.onBackPressed();
   }
+
 }
