@@ -5,6 +5,6 @@
     <item type= "integer" name="ten">10</item>
     <item type= "integer" name="fifteen">15</item>
     <item type= "integer" name="twenty">20</item>
-
+    <item type= "integer" name="tipPerNum">15</item>
     <item type= "integer" name="sizeNum">1</item>
 </resources>

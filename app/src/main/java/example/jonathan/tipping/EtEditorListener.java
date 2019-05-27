@@ -24,11 +24,9 @@ public class EtEditorListener implements TextView.OnEditorActionListener
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
     {
         //some error check for return false?
-        Log.d("ACTIVITY_MAIN", "EditTextListener OnEditorAction");
         switch (actionId)
         {
             case EditorInfo.IME_ACTION_DONE:
-                Log.d("ACTIVITY_MAIN", "Action done");
                 MainActivity.getInputViews().parseTextView(v);
                 Calc.getInstance().calc();
                 // find root of activity component tree.

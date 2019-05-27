@@ -5,8 +5,7 @@
 
 package example.jonathan.tipping;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
+
 import android.text.InputType;
 import android.util.Log;
 import android.util.SparseArray;
@@ -47,13 +46,11 @@ class InputViews {
      */
     void parseTextView(TextView v)
     {
-     //    Log.d("MAIN_ACTIVITY", "PARSETEXTVIEW");
-        //if text view is empty string do not reparse the view input.
+
         if (v.getText().toString().isEmpty() && !(v instanceof Switch))
             return;
 
  //       Log.d("MAIN_ACTIVITY", "INPUTPARSETEXTVIEW + " + v.getContext().getResources().getResourceEntryName(v.getId()) + ": " + v.getText().toString());
-
         switch (v.getInputType())
         {
             case InputType.TYPE_CLASS_NUMBER:
@@ -78,18 +75,4 @@ class InputViews {
                 tv_str_data.put(v.getId(), v.getText().toString());
         }
     }
-
-    // edit text is always a number.
-    // if edit text: then need to find out if it is double or int.
-    /*
-    private void parseNumberFromView(TextView v) {
-        double etNum = Double.parseDouble(((TextView) v).getText().toString());
-        // integer check
-        if ((etNum == (int)etNum) && !Double.isInfinite(etNum)) {
-            et_data.put(v.getId(), (int) etNum);
-        } else
-    //parse user input double, need to be correct format.
-            et_data.put(v.getId(), etNum);
-    }
-    */
 }

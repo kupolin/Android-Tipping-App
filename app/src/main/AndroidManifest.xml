@@ -4,7 +4,8 @@
     package="example.jonathan.tipping">
 
     <application
-        android:allowBackup="false"
+        android:name="example.jonathan.tipping.GlobalApplication"
+        android:allowBackup="true"
         tools:replace="android:allowBackup"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"

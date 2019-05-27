@@ -74,10 +74,6 @@ public class MainActivity extends BaseActivity
                 else if(v.getChildAt(i) instanceof TextView && !(v.getChildAt(i) instanceof Toolbar))
                 {
                     int vId = v.getChildAt(i).getId();
-              //      debugL(v.getChildAt(i).getClass().toString());
-              //      debugL(((TextView)v.getChildAt(i)).getText().toString());
-               //     debugL("VID: *** : " + v.getContext().getResources().getResourceEntryName(vId));
-
                     switch (((TextView)v.getChildAt(i)).getInputType())
                     {
                         //int #
@@ -88,8 +84,8 @@ public class MainActivity extends BaseActivity
 
                         //decimal #
                         case InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER:
-                            debugL("INITDATA " + "id: " + v.getContext().getResources().getResourceEntryName(vId) );
-                            debugL("dataGetter: " + Double.longBitsToDouble(dataGetter.getLong(Integer.toString(vId),-1)));
+                          //  debugL("INITDATA " + "id: " + v.getContext().getResources().getResourceEntryName(vId) );
+                          //  debugL("dataGetter: " + Double.longBitsToDouble(dataGetter.getLong(Integer.toString(vId),-1)));
 
                             MainActivity.in.tv_num_data.put(vId, Double.longBitsToDouble(dataGetter.getLong(Integer.toString(vId),
                                                                                          Double.doubleToLongBits(MainActivity.in.tv_num_data.get(vId).doubleValue()))));
@@ -150,12 +146,10 @@ public class MainActivity extends BaseActivity
                 {
                     if(v instanceof TextView)
                         continue;
-                    Log.d("MAINACTVITY", "!!! Initialize v  was not found: " + v.getClass().toString());
                    // throw new IllegalArgumentException();
                 }
             }
         }
-        Log.d("MAIN_ACTIVITY", "INITLISTERNES");
     }
 
     @Override
@@ -225,7 +219,7 @@ public class MainActivity extends BaseActivity
         Calc.getInstance().calc();
         //TODO: load from saved instance
         /*
-                if(savedInstanceState != null)
+            if(savedInstanceState != null)
                 initData(root);
             else
              in.parseAllTextViews(root);
@@ -250,7 +244,7 @@ public class MainActivity extends BaseActivity
         // home button hack will be used to simulate a button click left icon.
         setSupportActionBar((Toolbar)findViewById(R.id.toolbar));
     }
-/**/
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -310,20 +304,35 @@ public class MainActivity extends BaseActivity
             case R.id.share:
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
                 sharingIntent.setType("text/plain");
-                // grab location / date time in subject.
+                // TODO: grab location / date time in subject.
                 // date picker meh.
-                String billStr = ((TextView)findViewById(R.id.teBill)).getText().toString();
-                String tipPerStr = ((TextView)findViewById(R.id.etTipPer)).getText().toString();
-                String tipTotalStr = ((TextView)findViewById(R.id.tvTipNum)).getText().toString();
-                String billTotalStr = ((TextView)findViewById(R.id.tvTotalNum)).getText().toString();
+                final String billStr = ((TextView)findViewById(R.id.teBill)).getText().toString();
+                final String tipPerStr = ((TextView)findViewById(R.id.etTipPer)).getText().toString();
+                final String sizeNum = ((TextView)findViewById(R.id.etSize)).getText().toString();
+                final TextView tipTotal = findViewById(R.id.tvTipNum);
+                final TextView billTotal = findViewById(R.id.tvTotalNum);
+
                 //Total will change so need to get from in.[]
-                String str = "Tipping \n Bill: $" + billStr + "\n Tip: $" + tipTotalStr + " (" + tipPerStr + "%)" + "\n Total: $" + billTotalStr + "\n";
-                //String str = String.format(new Locale("en"), "Tipping \n Bill: $%s \n Tip: $%s (%s%) \n Total: $%s \n", billStr, tipTotalStr, tipPerStr, billTotalStr);
-                ((TextView)findViewById(R.id.tvTotalNum)).getText().toString();
+                Switch sw = findViewById(R.id.swSize);
+                String str;
+                if(sw.isChecked())
+                {
+                    str = "Tipping \nBill: $" + billStr + "\nTip: $" + tipTotal.getText().toString() + " (" + tipPerStr + "%)" + "\nTotal: $" + billTotal.getText().toString() + "\n";
+                    SwOnCheckedChangedListener.getInstance().onCheckedChanged(sw, false);
+                    str += "Party Size: "+ getResources().getInteger(R.integer.sizeNum) + "\nPersonal Tip: $" + tipTotal.getText().toString() + "\nPersonal Total: $" + billTotal.getText().toString();
+                }
+                else
+                {
+                    str = "Party Size: " + sizeNum + "\nPersonal Tip: $" + tipTotal.getText().toString() + "\nPersonal Total: $" + billTotal.getText().toString();
+                    SwOnCheckedChangedListener.getInstance().onCheckedChanged(sw, true);
+                    String billTip = String.format(new Locale("en"), "%.2f", MainActivity.getInputViews().tv_num_data.get(R.id.tvTipNum).doubleValue());
+                    str =  "Tipping \nBill: $" + billStr + "\nTip: $" + billTip + " (" + tipPerStr + "%)" + "\nTotal: $" + billTotal.getText().toString() + "\n" + str;
+                }
+
+                //trigger onCheck if recalculation needs to be recalculated.
                 sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Tipping");
                 sharingIntent.putExtra(Intent.EXTRA_TITLE, "Tipping");
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, str);
-//                sharingIntent.putExtra(Intent.EXTRA_TEXT, ((TextView)findViewById(R.id.tvTotalNum)).getText().toString());
                 startActivity(Intent.createChooser(sharingIntent, getString(R.string.send_intent_title)));
                 return true;
 
@@ -347,9 +356,19 @@ public class MainActivity extends BaseActivity
             case SETTING_REQ_CODE:
                 if(resultCode == RESULT_OK)
                 {
+                    //could make a bfs through ViewGroup like init shared preference
+                    //reset button called so reset etBill, etTip, tv total, tv tip% to default values.
+                    if(data.getBooleanExtra(String.valueOf(R.id.setting_btReset), false))
+                    {
+                        in.tv_num_data.put(R.id.teBill, Double.valueOf(getString(R.string.billNum)));
+                        in.tv_num_data.put(R.id.etTipPer, getResources().getInteger(R.integer.tipPerNum));
+                        in.tv_num_data.put(R.id.tvTotalNum, Double.valueOf(getString(R.string.tvTotal)));
+                        in.tv_num_data.put(R.id.tvTipNum, Double.valueOf(getString(R.string.tipNum)));
+                    }
+
                     in.tv_num_data.put(R.id.btTip1,
                       data.getIntExtra(Integer.toString(R.id.btTip1),
-                        in.tv_num_data.get(R.id.btTip1).intValue()));
+                    in.tv_num_data.get(R.id.btTip1).intValue()));
                     in.tv_num_data.put(R.id.btTip2,
                       data.getIntExtra(Integer.toString(R.id.btTip2),
                         in.tv_num_data.get(R.id.btTip2).intValue()));
@@ -407,7 +426,6 @@ public class MainActivity extends BaseActivity
     public void onRestoreInstanceState(Bundle savedInstanceState) {
         if(DEBUG)
             Log.d(ACTIVITY,"onRestoreInstanceState");
-       // teBill.setText(savedInstanceState.getString(TE_BILL_KEY));
     }
 
     // invoked when the activity may be temporarily destroyed, save the instance state here
@@ -415,8 +433,6 @@ public class MainActivity extends BaseActivity
     public void onSaveInstanceState(Bundle outState) {
         if(DEBUG)
             Log.d(ACTIVITY, "onSaveInstanceState");
-        // outState.putString(GAME_STATE_KEY, gameState);
-        //  outState.putString(TE_BILL_KEY, teBill.getText().toString());
         // call superclass to save any view hierarchy
         super.onSaveInstanceState(outState);
     }

@@ -13,7 +13,7 @@ import android.widget.EditText;
 
 import static android.content.Context.MODE_PRIVATE;
 
-//TODO: need persist data here.
+
 public class BtOnClickListener implements View.OnClickListener
 {
     private static final BtOnClickListener ourInstance = new BtOnClickListener();

@@ -3,13 +3,10 @@
 */
 package example.jonathan.tipping;
 
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
-import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.EditText;
+
 
 public class BaseActivity extends AppCompatActivity
 {

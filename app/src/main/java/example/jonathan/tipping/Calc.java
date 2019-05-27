@@ -4,16 +4,12 @@
 
 package example.jonathan.tipping;
 
-import android.app.Activity;
-import android.content.SharedPreferences;
-import android.os.Looper;
-import android.util.Log;
-import android.view.View;
+import android.app.Application;
 
-import static android.content.Context.MODE_PRIVATE;
-//TODO: change float to long.
+
 //controller that calculates the calctipNum, and calcTotal
-class Calc {
+class Calc extends Application
+{
     private static final Calc ourInstance = new Calc();
 
     static Calc getInstance() { return ourInstance;}
@@ -38,13 +34,7 @@ class Calc {
     private double calcTipNum(double bill, int tip, double div)
     {
         //tip is an int
-        MainActivity.debugL("CalcTipNum " + bill);
         double result =  bill*tip/div;
-
-        MainActivity.debugL("Bill: " + bill);
-        MainActivity.debugL("div:" + div);
-        MainActivity.debugL("Result:" + result);
-
         return result;
     }
 
@@ -58,45 +48,31 @@ class Calc {
         return bill + tip;
     }
 
-    void calc ()
+    // 1 if switch is true, else sizeNum.
+    private void baseCalc(int sizeNum, double div)
     {
         InputViews in = MainActivity.getInputViews();
-        //switch case for tip per person.
-        //Switch sw = v.findViewById(R.id.swSize);
-
-        //never gonna be null.
-
-        int size_int = in.tv_num_data.get(R.id.etSize).intValue();
-
-        Log.d("ACTIVITY_MAIN", "sw: " + in.tv_bool_data.get(R.id.swSize));
-        //divisor for calcTipNum. switch on = per person.
-        double div = in.tv_bool_data.get(R.id.swSize) ? 100.0 : (size_int * 100.0);
-
         //switch off is per person for size > 1.
         //switch on is one person.
-        Log.d("ACTIVITY_MAIN", "size_int " + size_int);
-        Log.d("ACTIVITY_MAIN", "tipPer in CALC " + in.tv_num_data.get(R.id.etTipPer));
-        if (Looper.myLooper() == Looper.getMainLooper())
-            MainActivity.debugL("MAINTHREADDDD CALC " + in.tv_num_data.get(R.id.etTipPer));
-        else
-            MainActivity.debugL("NOT MAIN THREAD CALC: " + in.tv_num_data.get(R.id.etTipPer));
-        MainActivity.debugL("Before calctipNum " + in.tv_num_data.get(R.id.teBill));
-        MainActivity.debugL("Bill: " + in.tv_num_data.get(R.id.teBill));
-        MainActivity.debugL("div:" + div);
-        MainActivity.debugL("tipPer:" + in.tv_num_data.get(R.id.etTipPer));
 
         double dBill = in.tv_num_data.get(R.id.teBill).doubleValue();
-
         double dTipNumResult = calcTipNum(dBill, in.tv_num_data.get(R.id.etTipPer).intValue(), div);
-        double dTotal = calcTotal(dBill, dTipNumResult);
-
-        //Total Bill per person if switch is off.
-        if(!in.tv_bool_data.get(R.id.swSize))
-            dTotal /= size_int;
+        double dTotal = calcTotal(sizeNum > 1 ? dBill/sizeNum : dBill, dTipNumResult);
 
         // store in ram
         in.tv_num_data.put(R.id.tvTipNum, dTipNumResult);
         in.tv_num_data.put(R.id.tvTotalNum, dTotal);
+    }
+    void calc(boolean isChecked)
+    {
+        int size_int = isChecked ? GlobalApplication.getAppContext().getResources().getInteger(R.integer.sizeNum)
+                                 : MainActivity.getInputViews().tv_num_data.get(R.id.etSize).intValue();
+        double div = isChecked ? 100.0 : (size_int * 100.0);
+        baseCalc(size_int, div);
+    }
+    void calc ()
+    {
+        calc(MainActivity.getInputViews().tv_bool_data.get(R.id.swSize));
     }
 }
 

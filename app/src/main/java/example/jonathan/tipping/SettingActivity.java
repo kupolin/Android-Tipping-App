@@ -4,12 +4,10 @@
 
 package example.jonathan.tipping;
 
-import android.app.Activity;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Looper;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,8 +20,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
-//TODO: pre 0000. regex: ^0+?!$, ""
 public class SettingActivity extends BaseActivity
 {
   private final Intent inRes = new Intent();
@@ -55,7 +51,7 @@ public class SettingActivity extends BaseActivity
     @Override
     public void onFocusChange(View v, boolean hasFocus)
     {
-      MainActivity.debugL("TESTING : " + hasFocus);
+      //MainActivity.debugL("TESTING : " + hasFocus);
       TextView tv = (TextView) v;
       if (hasFocus)
       {
@@ -64,9 +60,12 @@ public class SettingActivity extends BaseActivity
         return;
       }
 
-      MainActivity.debugL("HELLO");
       if ("".contentEquals(tv.getText()))
         tv.setText(this.tempStr);
+      else
+        // <3 regex. if there are more than 1 0 that is not followed by end then replace with ""
+        tv.setText(tv.getText().toString().replaceFirst("^0+(?!$)", ""));
+
       saveData((TextView) v);
     }
   }
@@ -140,6 +139,8 @@ public class SettingActivity extends BaseActivity
             saveData(etTip2);
             saveData(etTip3);
             saveData(etSize);
+            //save reset field.
+            saveData((TextView)v);
             break;
           default:
         }
@@ -188,7 +189,7 @@ public class SettingActivity extends BaseActivity
   @Override
   public boolean onCreateOptionsMenu(Menu menu)
   {
-    Log.d("MAIN_ACTIVITY_SETTING", "Setting onCreateOptionsMenu");
+   // Log.d("MAIN_ACTIVITY_SETTING", "Setting onCreateOptionsMenu");
     ActionBar ab = getSupportActionBar();
     ab.setDisplayHomeAsUpEnabled(true);
     return super.onCreateOptionsMenu(menu);
@@ -201,10 +202,10 @@ public class SettingActivity extends BaseActivity
   // pass data to previous activity, and persistent storage
   private void saveData(TextView v)
   {
-    MainActivity.debugL("SAVEDATA");
     //MainActivity.debugL("currentFocus: " + getResources().getResourceEntryName(getCurrentFocus().getId()));
-
-    int out = Integer.parseInt(v.getText().toString());
+    int out = 0;
+    if(!(v instanceof Button))
+      out = Integer.parseInt(v.getText().toString());
 
     SharedPreferences.Editor pref = getSharedPreferences(MainActivity.class.getSimpleName(), MODE_PRIVATE).edit();
     switch (v.getId())
@@ -229,6 +230,10 @@ public class SettingActivity extends BaseActivity
         pref.putInt(Integer.toString(R.id.etSize), out);
         break;
 
+      case R.id.setting_btReset:
+        // when reset is called bill, tip, total, tip% should be reset to default.
+        this.inRes.putExtra(Integer.toString(R.id.setting_btReset), true);
+        break;
       default:
         throw new IllegalArgumentException("SaveData: Invalid View. Not defined in Switch statement");
     }
@@ -261,16 +266,6 @@ public class SettingActivity extends BaseActivity
     }
   }
 
-  public static void checkThread()
-  {
-    Thread t = Thread.currentThread();
-
-    long l = t.getId();
-    String name = t.getName();
-    long p = t.getPriority();
-    String gname = t.getThreadGroup().getName();
-    MainActivity.debugL(name + ":(id)" + l + ":(priority)" + p + ":(group)" + gname);
-  }
   @Override
   public void onDestroy()
   {
@@ -289,5 +284,4 @@ public class SettingActivity extends BaseActivity
       getCurrentFocus().clearFocus();
     super.onBackPressed();
   }
-
 }

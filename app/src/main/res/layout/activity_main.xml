@@ -92,7 +92,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginLeft="32dp"
         android:layout_marginTop="32dp"
-        android:text="Tip"
+        android:text="@string/tip"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvSize" />
 
@@ -206,7 +206,7 @@
         android:layout_marginRight="8dp"
         android:ems="10"
         android:inputType="number"
-        android:text="@integer/ten"
+        android:text="@integer/tipPerNum"
         android:maxLength="@integer/max_length"
         android:imeOptions="actionDone"
         app:layout_constraintRight_toLeftOf="@id/btTipGt"
